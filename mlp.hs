@@ -1,5 +1,6 @@
 import Data.List
 import System.Random
+import Control.Monad (replicateM)
 
 main = do
     let a = [[1,2],[3,4]]
@@ -25,8 +26,9 @@ main = do
         print y
         putStrLn ""
     mapM_ layer_print $ multi_layer_net_initialize [5,5,5] seed 
-    print "Hello WOrld!"
-
+    train_default [] [] [] [] []
+    brl <- boundedrandomList (0,10) 10
+    print brl
 
 mmult :: (Num a) => [[a]] -> [[a]] -> [[a]]
 mmult a b = if snd (dimension a) == fst (dimension b)
@@ -112,7 +114,6 @@ indexing_one max_index label = map (\x -> (zerolist x) ++ [1] ++ (zerolist (max_
     where
         zerolist n = replicate n 0 
 
-
 multi_layer_net :: (Floating a, Ord a) => a ->[([[a]],[a])]->[[a]] ->[Int] ->  
     (a,[([[a]],[a])])
 multi_layer_net reg model input y = (loss, grad)
@@ -151,11 +152,13 @@ multi_layer_net_initialize :: ( Num b) => [Int] -> StdGen -> [([[Float]],[b])]
 multi_layer_net_initialize layer_dimensions seed = model
     where
         model = pl2lp wl bl 
-        wl = map (\x -> (uncurry randomMatrix x) seed) (pl2lp (init layer_dimensions) (tail layer_dimensions))
-        bl = map (\x -> replicate x 0 )(tail layer_dimensions)
+        wl = map  weight_initialization_method (pl2lp (init layer_dimensions) (tail layer_dimensions))
+        bl = map bias_initialization_method (tail layer_dimensions)
         pl2lp l1 l2 = if length l1 == length l2 
             then zipWith (\x -> \y -> (x,y)) l1 l2
             else error "trying 2 pairize unequal length lists"
+        weight_initialization_method = \x -> smmult (0.00001) ((uncurry randomMatrix x) seed)
+        bias_initialization_method = \x -> replicate x 0 
 randomMatrix :: Int -> Int -> StdGen -> [[Float]] --range [0,1)
 randomMatrix n m seed = (splitEvery m)$ randomlist (n*m) seed
 randomlist ::  Int -> StdGen -> [Float]
@@ -172,12 +175,33 @@ stochastic_gradient learning_rate model grad = updated_model
         updated_model = zipWith (update) model grad
         update (weight, bias) (weight_grad, bias_grad) = ((madd weight (smmult (-1 * learning_rate) weight_grad)),(zipWith (-) bias (map ((*) learning_rate) bias_grad) )) 
 
-{-
-train :: (Num a) => Floating -> Floating -> Floating -> Floating -> Int -> Int -> Bool -> 
-    String ->-- update
+boundedrandomList :: (Int, Int) -> Int -> IO([Int])
+boundedrandomList (lower_bound, greater_bound) n = replicateM n $ randomRIO (lower_bound,greater_bound)
+
+train :: (Num a) => Float -> Float -> Float -> Float -> Int -> Int -> Bool -> 
+    String -> -- update
     ([[a]] -> [Int] -> (a,[[a]]) )->  --loss function
     [([[a]],[a])] -> [[a]] -> [a] -> [[a]] -> [a] -> IO ([([[a]],[a])])
-train reg learning_rate momentum learning_rate_decay num_epochs batch_size verbose updater loss_function model X y X_val y_val = do
-    let (train_loss, train_grad) = multi_layer_net reg model X_batch y_batch
-    let (validation_loss , _) = multi_layer_net reg model X_val_batch y_val_batch
--}
+train reg learning_rate momentum learning_rate_decay num_epochs batch_size verbose updater loss_function model x y x_val y_val = do
+    let number_of_data = fst $dimension x
+    let number_of_val_data = fst $dimension x_val
+    let iterations_per_epoch = number_of_data / batch_size
+    train_step steps_left model_input = 
+        if steps_left == 0 then model_input else  train_step (steps_left -1) updated_model_input
+        where
+            chosen_indices <- boundedrandomList (0,number_of_data-1) batch_size
+            x_batch = map (x !!) chosen_indices
+            y_batch = map (y !!) chosen_indices
+            (train_loss, train_grad) = multi_layer_net reg model x_batch y_batch
+            updated_model_input = stochastic_gradient learning_rate model train_grad
+    train_step (iterations_per_epoch * num_epochs) model
+
+    --let (validation_loss , _) = multi_layer_net reg model x_val_batch y_val_batch
+    print("Hello World!")
+
+train_default = train 0.0 1e-2 0 0.95 30 100 True "sgd" softmax_loss 
+
+
+    
+    
+
