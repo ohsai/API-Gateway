@@ -6,6 +6,12 @@ server: authServer httpServer
 proxy: proxyServer
 	./bin/bootproxy.sh	
 
+regular: 
+	./bin/regquery.sh 
+
+signin:
+	./bin/signin.sh
+
 authServer:  
 	go install ./src/Auth/authServer.go 
 

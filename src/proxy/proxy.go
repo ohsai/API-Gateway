@@ -1,9 +1,7 @@
 package main
 
 import (
-	"crypto/hmac"
-	"crypto/sha256"
-	"encoding/base64"
+	"./mycrypt"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -34,12 +32,15 @@ func main() {
 	if len(os.Args) != 3 {
 		panic("Usage : (program name) <port> <yaml path for MSA structure>")
 	}
-	MSA_ptr = yamlDecoder(os.Args[2:3][0])
-	fmt.Println(MSA_ptr.Name, MSA_ptr.Service[0].Name, MSA_ptr.Service[0].Instance[0])
-	createProxy(os.Args[1:2][0])
-	auth_key = "private_key"
+	proxy_init(os.Args[1:2][0], os.Args[2:3][0])
 }
-func createProxy(PORT string) {
+func proxy_init(PORT string, MSAyamlpath string) {
+	MSA_ptr = yamlDecoder(MSAyamlpath)
+	auth_key = "private_key"
+	createListener(PORT)
+	fmt.Println(MSA_ptr.Name, MSA_ptr.Service[0].Name, MSA_ptr.Service[0].Instance[0])
+}
+func createListener(PORT string) {
 	http.Handle("/", new(proxyHandler))
 	http.ListenAndServe(":"+PORT, nil)
 }
@@ -67,10 +68,33 @@ func prefilter(structure *MSA, req *http.Request) (*http.Request, string, error)
 		fmt.Println("Unable to route by url : ", urlerr.Error())
 		return req, req_serv, urlerr
 	}
+	var proxyReq *http.Request
+	var err error
+	if req_serv == "auth" {
+		proxyReq, err = reform_request_auth(newurl, req)
+	} else {
+		proxyReq, err = reform_request(newurl, req)
+	}
+	if err != nil {
+		fmt.Println("Unable to create request from url : ", err.Error())
+		return proxyReq, req_serv, err
+	}
+	return proxyReq, req_serv, err
+}
+func reform_request(newurl *url.URL, req *http.Request) (*http.Request, error) {
+	//Authentication
+	authtoken := &AuthRespwToken{}
+	authtoken_str := req.Header.Get("AuthToken")
+	err := json.Unmarshal([]byte(authtoken_str), authtoken)
+	validity := mycrypt.CheckMAC((authtoken.Username + authtoken.Role), authtoken.Hash, auth_key)
+	if validity == false {
+		return req, errors.New("Invalid authentication token")
+	}
+
 	proxyReq, err := http.NewRequest(req.Method, newurl.String(), req.Body)
 	if err != nil {
 		fmt.Println("Unable to create forward request! : ", err.Error())
-		return proxyReq, req_serv, err
+		return proxyReq, err
 	}
 
 	proxyReq.Header.Set("X-Forwarded-For", req.RemoteAddr)
@@ -80,9 +104,26 @@ func prefilter(structure *MSA, req *http.Request) (*http.Request, string, error)
 			proxyReq.Header.Add(header, value)
 		}
 	}
-	return proxyReq, req_serv, err
+	return proxyReq, err
 }
-func choose_service(structure *MSA, uri_input string) (string, []string, error) {
+func reform_request_auth(newurl *url.URL, req *http.Request) (*http.Request, error) {
+	proxyReq, err := http.NewRequest(req.Method, newurl.String(), req.Body)
+	if err != nil {
+		fmt.Println("Unable to create forward request! : ", err.Error())
+		return proxyReq, err
+	}
+
+	proxyReq.Header.Set("X-Forwarded-For", req.RemoteAddr)
+
+	for header, values := range req.Header {
+		for _, value := range values {
+			proxyReq.Header.Add(header, value)
+		}
+	}
+	return proxyReq, err
+}
+
+func service2instlist(structure *MSA, uri_input string) (string, []string, error) {
 	parts := strings.Split(uri_input, string(os.PathSeparator))
 	fmt.Println("Requested Service : ", parts[1])
 	var inst_list []string
@@ -108,7 +149,7 @@ func choose_instance(instance_list []string) (*url.URL, error) {
 
 func reform_url(structure *MSA, url_in *url.URL) (string, *url.URL, error) {
 	uri_input := url_in.RequestURI()
-	req_serv, inst_list, serv_err := choose_service(structure, uri_input)
+	req_serv, inst_list, serv_err := service2instlist(structure, uri_input)
 	if serv_err != nil {
 		fmt.Println("Error while choosing service url :", serv_err.Error())
 		return req_serv, url_in, serv_err
@@ -122,10 +163,7 @@ func reform_url(structure *MSA, url_in *url.URL) (string, *url.URL, error) {
 	}
 	parts := strings.Split(uri_input, string(os.PathSeparator))
 	rest_of_uri := strings.Join(parts[2:], string(os.PathSeparator))
-	fmt.Println("Rest part of URI : ", rest_of_uri)
-	fmt.Println("URI Before : ", url_out.String())
 	url_out.Path = rest_of_uri
-	fmt.Println("URI After : ", url_out.String())
 	return req_serv, url_out, nil
 }
 func routing_filter(req *http.Request) (*http.Response, error) {
@@ -148,57 +186,65 @@ type AuthRespwToken struct {
 	Hash     string `json:"hash"`
 }
 
-func post_filter(req_serv string, proxyRes *http.Response, w http.ResponseWriter) {
+func post_filter(req_serv string, proxyRes *http.Response, w http.ResponseWriter) error {
 	fmt.Println("requested service : ", req_serv)
 
 	if req_serv == "auth" {
-		temp := &AuthResp{}
-		jsonparseerr := json.NewDecoder(proxyRes.Body).Decode(temp)
-		if jsonparseerr != nil {
-			fmt.Println(jsonparseerr.Error())
-			return
-		}
-		authresp := AuthRespwToken{
-			Username: temp.Username,
-			Role:     temp.Role,
-			//Hash:     "12",
-			Hash: string(CreateMAC(temp.Username+temp.Role, auth_key)),
-		}
-		b, err := json.Marshal(authresp)
+		err := reform_response_auth(proxyRes, w)
 		if err != nil {
 			fmt.Println(err.Error())
-			return
+			return err
 		}
-		fmt.Println(authresp)
-		fmt.Println(string(b))
-		w.Header().Set("Content-Type", "application/json")
-		_, testerr := w.Write(b)
-		if testerr != nil {
-			fmt.Println(testerr.Error())
-			return
-		}
-
 	} else {
-		for header, values := range proxyRes.Header {
-			for _, value := range values {
-				w.Header().Add(header, value)
-			}
+		err := reform_response(proxyRes, w)
+		if err != nil {
+			fmt.Println(err.Error())
+			return err
 		}
-		io.Copy(w, proxyRes.Body)
+	}
+	return nil
+}
+func reform_response_auth(proxyRes *http.Response, w http.ResponseWriter) error {
+	temp := &AuthResp{}
+	jsonparseerr := json.NewDecoder(proxyRes.Body).Decode(temp)
+	if jsonparseerr != nil {
+		fmt.Println(jsonparseerr.Error())
+		return jsonparseerr
+	}
+	authresp := AuthRespwToken{
+		Username: temp.Username,
+		Role:     temp.Role,
+		Hash:     string(mycrypt.CreateMAC(temp.Username+temp.Role, auth_key)),
+	}
+	b, err := json.Marshal(authresp)
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+	fmt.Println(authresp)
+	fmt.Println(string(b))
+	w.Header().Set("Content-Type", "application/json")
+	_, err = w.Write(b)
+	if err != nil {
+		fmt.Println(err.Error())
+		return err
+	}
+	return nil
+}
+func reform_response(proxyRes *http.Response, w http.ResponseWriter) error {
+	for header, values := range proxyRes.Header {
+		for _, value := range values {
+			w.Header().Add(header, value)
+		}
+	}
+	if _, err := io.Copy(w, proxyRes.Body); err != nil {
+		fmt.Println(err.Error())
+		return err
 	}
 	proxyRes.Body.Close()
+	return nil
 }
-func CreateMAC(message, key string) []byte {
-	key_encoded := base64.StdEncoding.EncodeToString([]byte(key))
-	mac := hmac.New(sha256.New, []byte(key_encoded))
-	mac.Write([]byte(message))
-	outMAC := mac.Sum(nil)
-	return outMAC
-}
-func CheckMAC(message, messageMAC, key string) bool {
-	expectedMAC := CreateMAC(message, key)
-	return hmac.Equal([]byte(messageMAC), expectedMAC)
-}
+
 func (h *proxyHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	proxyReq, req_serv, prefilter_err := prefilter(MSA_ptr, req)
 	if prefilter_err != nil {

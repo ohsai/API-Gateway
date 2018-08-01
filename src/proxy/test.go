@@ -1,4 +1,4 @@
-package main
+package test
 
 import (
 	"crypto/hmac"
@@ -7,7 +7,7 @@ import (
 	"fmt"
 )
 
-func main() {
+func test() {
 	data := "Hello World!"
 	sEnc := base64.StdEncoding.EncodeToString([]byte(data))
 	fmt.Println(sEnc)
