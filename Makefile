@@ -18,6 +18,7 @@ authServer:
 httpServer:  
 	go install ./src/http_server/httpServer.go
 
+proxy_src = ./src/proxy
 proxyServer: 
-	go install ./src/proxy/proxy.go 
+	go install $(proxy_src)
 

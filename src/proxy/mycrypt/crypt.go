@@ -13,7 +13,7 @@ func CreateMAC(message, key string) []byte {
 	outMAC := mac.Sum(nil)
 	return outMAC
 }
-func CheckMAC(message, messageMAC, key string) bool {
+func CheckMAC(message string, messageMAC []byte, key string) bool {
 	expectedMAC := CreateMAC(message, key)
 	return hmac.Equal([]byte(messageMAC), expectedMAC)
 }

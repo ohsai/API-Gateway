@@ -47,6 +47,7 @@ type ResponseCred struct {
 }
 
 func Signup(w http.ResponseWriter, r *http.Request) {
+
 	// Parse and decode the request body into a new `Credentials` instance
 	creds := &DBCredentials{}
 	err := json.NewDecoder(r.Body).Decode(creds)
