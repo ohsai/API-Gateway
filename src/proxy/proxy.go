@@ -9,16 +9,6 @@ import (
 	"strings"
 )
 
-type Microservice struct {
-	Name     string
-	Instance []string
-}
-
-type MSA struct {
-	Name    string
-	Service []Microservice
-}
-
 var MSA_ptr *MSA
 var auth_key string
 

@@ -1,2 +1,0 @@
-./bin/regquery.sh 
-Internal Server Error
