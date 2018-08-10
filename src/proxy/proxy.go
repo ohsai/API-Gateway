@@ -1,8 +1,8 @@
 package main
 
 import (
-	"gopkg.in/yaml.v2"
-	"io/ioutil"
+	//"fmt"
+	//"github.com/jinzhu/copier"
 	"log"
 	"net/http"
 	"os"
@@ -11,6 +11,7 @@ import (
 
 var MSA_ptr *MSA
 var auth_key string
+var HealthChecker_ptr *MSA
 
 func main() {
 	if len(os.Args) != 3 {
@@ -21,8 +22,9 @@ func main() {
 func proxy_init(PORT string, MSAyamlpath string) {
 	MSA_ptr = yamlDecoder(MSAyamlpath)
 	auth_key = "private_key"
+	MSA_print(MSA_ptr)
+	healthchecker_init()
 	createListener(PORT)
-	log.Println(MSA_ptr.Name, MSA_ptr.Service[0].Name, MSA_ptr.Service[0].Instance[0])
 }
 func createListener(PORT string) {
 	http.Handle("/", new(proxyHandler))
@@ -31,20 +33,6 @@ func createListener(PORT string) {
 
 type proxyHandler struct {
 	http.Handler
-}
-
-func yamlDecoder(MSAyamlpath string) *MSA {
-	msa_out := new(MSA)
-	yaml_file, yaml_open_err := ioutil.ReadFile(MSAyamlpath)
-	if yaml_open_err != nil {
-		log.Println("error while opening yaml", yaml_open_err.Error())
-	}
-	yaml_decode_err := yaml.Unmarshal(yaml_file, &msa_out)
-	if yaml_decode_err != nil {
-		log.Println("error while unmarshal on yaml", yaml_decode_err.Error())
-	}
-	log.Printf("---MSA : \n%+v\n", msa_out)
-	return msa_out
 }
 
 func (h *proxyHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
@@ -73,6 +61,8 @@ func filter_error_handler(filter_name string, w http.ResponseWriter, err error) 
 	} else if error_type == RESOURCE_NONEXISTENT_ERROR {
 		w.WriteHeader(http.StatusNotFound)
 
+	} else if error_type == NO_AVAILABLE_INSTANCE_ERROR {
+		w.WriteHeader(http.StatusServiceUnavailable)
 	} else {
 		w.WriteHeader(http.StatusInternalServerError)
 		//w.Write([]byte(http.StatusText(http.StatusInternalServerError)))
@@ -83,3 +73,4 @@ func filter_error_handler(filter_name string, w http.ResponseWriter, err error) 
 var AUTHENTICATION_TOKEN_ERROR string = "AuthTokenError"
 var ERROR_STRING_SEPARATOR string = "$"
 var RESOURCE_NONEXISTENT_ERROR string = "NotFoundError"
+var NO_AVAILABLE_INSTANCE_ERROR string = "NoInstanceError"

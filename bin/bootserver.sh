@@ -15,7 +15,7 @@ $goroot$Auth 8000 &
 while true; do
         read -p "Kill servers?[y/n]" yn
         case $yn in
-                [Yy]* ) killall $http_server_name && killall $auth_server_name &&  break;;
+                [Yy]* ) killall $http_server_name & killall $auth_server_name &  break;;
                 * ) echo "Keep Running Servers.";;
         esac
 done
