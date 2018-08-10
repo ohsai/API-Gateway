@@ -75,7 +75,7 @@ func service2instlist(uri_input string) ([]string, error) {
 	return inst_list, nil
 }
 func choose_instance(instance_list []string, load_balancer_info []string) (*url.URL, error) {
-	instance_chosen, err := load_balance(instance_list, "url_hash", load_balancer_info)
+	instance_chosen, err := load_balance(instance_list, "random", load_balancer_info)
 	if err != nil {
 		return nil, err
 	}
