@@ -1,28 +1,21 @@
 package main
 
 import (
-	//"fmt"
-	//"github.com/jinzhu/copier"
-	"log"
+	//"log"
 	"net/http"
 	"os"
-	"strings"
 )
 
-var MSA_ptr *MSA
-var auth_key string
-var HealthChecker_ptr *MSA
-
 func main() {
-	if len(os.Args) != 3 {
+	if len(os.Args) != 4 {
 		panic("Usage : (program name) <port> <yaml path for MSA structure>")
 	}
-	proxy_init(os.Args[1:2][0], os.Args[2:3][0])
+	proxy_init(os.Args[1:2][0], os.Args[2:3][0], os.Args[3:4][0])
 }
-func proxy_init(PORT string, MSAyamlpath string) {
+func proxy_init(PORT string, MSAyamlpath string, RSyamlpath string) {
 	MSA_ptr = yamlDecoder(MSAyamlpath)
 	auth_key = "private_key"
-	MSA_print(MSA_ptr)
+	RS_ptr = yamlDecoderRS(RSyamlpath)
 	healthchecker_init()
 	createListener(PORT)
 }
@@ -52,25 +45,3 @@ func (h *proxyHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 }
-func filter_error_handler(filter_name string, w http.ResponseWriter, err error) {
-	log.Println(filter_name+" terminated proxy with error : ", err.Error())
-	error_type := strings.Split(err.Error(), ERROR_STRING_SEPARATOR)[0]
-	if error_type == AUTHENTICATION_TOKEN_ERROR {
-		w.WriteHeader(http.StatusBadRequest)
-		//w.Write([]byte(http.StatusText(http.StatusBadRequest)))
-	} else if error_type == RESOURCE_NONEXISTENT_ERROR {
-		w.WriteHeader(http.StatusNotFound)
-
-	} else if error_type == NO_AVAILABLE_INSTANCE_ERROR {
-		w.WriteHeader(http.StatusServiceUnavailable)
-	} else {
-		w.WriteHeader(http.StatusInternalServerError)
-		//w.Write([]byte(http.StatusText(http.StatusInternalServerError)))
-	}
-	return
-}
-
-var AUTHENTICATION_TOKEN_ERROR string = "AuthTokenError"
-var ERROR_STRING_SEPARATOR string = "$"
-var RESOURCE_NONEXISTENT_ERROR string = "NotFoundError"
-var NO_AVAILABLE_INSTANCE_ERROR string = "NoInstanceError"

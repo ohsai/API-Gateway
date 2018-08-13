@@ -7,18 +7,22 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"log"
 	"net/http"
+	"os"
 )
 
 var db *sql.DB
 
 func main() {
+	if len(os.Args) != 2 {
+		panic("Error : need one and only one argument specifying port number")
+	}
 	// "Signin" and "Signup" are handler that we will implement
 	http.HandleFunc("/signin", Signin)
 	http.HandleFunc("/signup", Signup)
 	// initialize our database connection
 	initDB()
 	// start the server on port 8000
-	log.Fatal(http.ListenAndServe(":8000", nil))
+	log.Fatal(http.ListenAndServe(":"+os.Args[1:2][0], nil))
 }
 
 func initDB() {

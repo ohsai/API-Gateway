@@ -12,6 +12,9 @@ regular:
 signin:
 	./bin/signin.sh
 
+region: 
+	sudo ./bin/region.sh 
+
 authServer:  
 	go install ./src/Auth/authServer.go 
 

@@ -7,6 +7,8 @@ import (
 	"proxy/mycrypt"
 )
 
+var auth_key string
+
 func request_authentication(req *http.Request) (bool, error) {
 	//Authentication
 	authtoken := &Signin_Resp_to_Client{}
