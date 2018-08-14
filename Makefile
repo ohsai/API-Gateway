@@ -3,7 +3,7 @@ all: authServer httpServer proxyServer
 server: authServer httpServer 
 	./bin/bootserver.sh 	
 
-proxy: proxyServer
+proxy: proxyServer elbServer
 	./bin/bootproxy.sh	
 
 regular: 
@@ -20,6 +20,9 @@ authServer:
 
 httpServer:  
 	go install ./src/http_server/httpServer.go
+
+elbServer:  
+	go install ./src/elb
 
 proxy_src = ./src/proxy
 proxyServer: 

@@ -3,10 +3,8 @@ regions:
         - 
          region_code: "ko_KR"
          available_zone:
-                 - "http://localhost:6000"
-                 - "http://localhost:6001"
+                 - "http://localhost:9000"
         -
          region_code: "en_US" 
          available_zone: 
-                - "http://localhost:6002"
-                - "http://localhost:6003"
+                - "http://localhost:9001"
