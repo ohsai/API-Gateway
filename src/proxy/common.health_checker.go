@@ -50,7 +50,9 @@ func active_check(interval_sec int) error {
 			HealthChecker_ptr.Service[i].Available_instance = refresh_available_instance
 		}
 		time.Sleep(time.Duration(interval_sec) * time.Second)
-		//HealthChecker_print(HealthChecker_ptr)
+		if Config_ptr.MSA_print_or_not {
+			HealthChecker_print(HealthChecker_ptr)
+		}
 	}
 	return nil
 }
@@ -66,7 +68,7 @@ func ping(cur_instance string) error {
 	return err
 }
 func HealthChecker_print(HC_in *HealthChecker) {
-	log.Println("Structure of ", HC_in.Name, " :")
+	log.Println("PXY$Structure of ", HC_in.Name, " :")
 	for _, cur_service := range HC_in.Service {
 		fmt.Println("  ", cur_service.Name)
 		for _, cur_instance := range cur_service.Available_instance {

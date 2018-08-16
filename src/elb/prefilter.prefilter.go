@@ -18,26 +18,28 @@ type Region struct {
 
 var Region_ptr *Region
 
-func yamlDecoderR(Ryamlpath string) *Region {
+func yamlDecoderR(Ryamlpath string) (*Region, error) {
 	r_out := new(Region)
 	yaml_file, yaml_open_err := ioutil.ReadFile(Ryamlpath)
 	if yaml_open_err != nil {
 		log.Println("error while opening yaml", yaml_open_err.Error())
+		return r_out, yaml_open_err
 	}
 	yaml_decode_err := yaml.Unmarshal(yaml_file, &r_out)
 	if yaml_decode_err != nil {
 		log.Println("error while unmarshal on yaml", yaml_decode_err.Error())
+		return r_out, yaml_decode_err
 	}
 	R_print(r_out)
-	return r_out
+	return r_out, nil
 }
 func R_print(R_in *Region) {
-	log.Println("Region Structure :")
+	log.Println("ELB$Region Structure :")
 	fmt.Println("  ", R_in.Region_code)
 	for _, cur_AZ := range R_in.Available_Zone {
 		fmt.Println("    ", cur_AZ)
 	}
-	fmt.Println("cur region code : ", R_in.Region_code)
+	fmt.Println("ELB$cur region code : ", R_in.Region_code)
 }
 func prefilter(req *http.Request) (*http.Request, error) {
 	load_balancer_info := []string{strings.Split(req.RemoteAddr, ":")[0], req.URL.Path}

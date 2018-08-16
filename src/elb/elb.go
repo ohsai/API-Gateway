@@ -1,7 +1,7 @@
 package main
 
 import (
-	//"log"
+	"log"
 	"net/http"
 	"os"
 )
@@ -15,7 +15,12 @@ func main() {
 func proxy_init(PORT string, Ryamlpath string) {
 	//MSA_ptr = yamlDecoder(MSAyamlpath)
 	//auth_key = "private_key"
-	Region_ptr = yamlDecoderR(Ryamlpath)
+	var err error
+	Region_ptr, err = yamlDecoderR(Ryamlpath)
+	if err != nil {
+		log.Println(err.Error())
+		return
+	}
 	healthchecker_init()
 	createListener(PORT)
 }

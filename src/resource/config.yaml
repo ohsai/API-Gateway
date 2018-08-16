@@ -1,0 +1,10 @@
+cache_or_not: true
+redis_address: "localhost:6379"
+redis_password: ""
+redis_db: "0"
+MSA_healthcheck_interval: 10
+config_check_interval: 9
+load_balancer_policy: "random"
+RS_print_or_not: "true"
+MSA_print_or_not: "false"
+auth_key: "private_key"

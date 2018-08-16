@@ -7,7 +7,7 @@ import (
 	"proxy/mycrypt"
 )
 
-var auth_key string
+//var auth_key string
 
 func request_authentication(req *http.Request) (bool, error) {
 	//Authentication
@@ -28,7 +28,7 @@ func request_authentication(req *http.Request) (bool, error) {
 	}
 	//log.Println("check hash : ", mycrypt.CreateMAC(authtoken.Username+authtoken.Role, auth_key))
 	//log.Println("token hash : ", authtoken.Hash)
-	validity := mycrypt.CheckMAC((authtoken.Username + authtoken.Role), authtoken.Hash, auth_key)
+	validity := mycrypt.CheckMAC((authtoken.Username + authtoken.Role), authtoken.Hash, Config_ptr.auth_key)
 	if validity {
 		return validity, nil
 	} else {

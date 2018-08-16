@@ -36,7 +36,7 @@ func active_check(interval_sec int) error {
 			}
 		}
 		Region_HC_ptr.Available_Zone = refresh_available_instance
-		Region_HC_print(Region_HC_ptr)
+		//Region_HC_print(Region_HC_ptr)
 		time.Sleep(time.Duration(interval_sec) * time.Second)
 	}
 	return nil
@@ -53,7 +53,7 @@ func ping(cur_instance string) error {
 	return err
 }
 func Region_HC_print(RHC_in *Region_HealthChecker) {
-	log.Println("Structure of ", RHC_in.Name, " :")
+	log.Println("ELB$Structure of ", RHC_in.Name, " :")
 	for _, cur_instance := range RHC_in.Available_Zone {
 		fmt.Println("    ", cur_instance)
 	}

@@ -4,12 +4,17 @@ import (
 	"encoding/json"
 	"io"
 	//"log"
+	"errors"
 	"net/http"
 	"proxy/mycrypt"
 )
 
 func post_filter(proxyRes *http.Response, w http.ResponseWriter) error {
 	req_serv := proxyRes.Header.Get("Service")
+	if req_serv == "" {
+		return errors.New("Service header does not exist while proxy process")
+	}
+
 	//log.Println(proxyRes.Status)
 	var err error
 	if uri_head(req_serv) == "auth" {
@@ -56,7 +61,7 @@ func create_auth_token(Body io.ReadCloser) ([]byte, error) {
 	authresp := Signin_Resp_to_Client{
 		Username: temp.Username,
 		Role:     temp.Role,
-		Hash:     mycrypt.CreateMAC(temp.Username+temp.Role, auth_key),
+		Hash:     mycrypt.CreateMAC(temp.Username+temp.Role, Config_ptr.auth_key),
 	}
 	b, err := json.Marshal(authresp)
 	if err != nil {
