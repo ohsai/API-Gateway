@@ -28,7 +28,7 @@ func request_authentication(req *http.Request) (bool, error) {
 	}
 	//log.Println("check hash : ", mycrypt.CreateMAC(authtoken.Username+authtoken.Role, auth_key))
 	//log.Println("token hash : ", authtoken.Hash)
-	validity := mycrypt.CheckMAC((authtoken.Username + authtoken.Role), authtoken.Hash, Config_ptr.auth_key)
+	validity := mycrypt.CheckMAC((authtoken.Username + authtoken.Role), authtoken.Hash, Config_ptr.Auth_key)
 	if validity {
 		return validity, nil
 	} else {

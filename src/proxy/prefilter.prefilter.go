@@ -107,7 +107,7 @@ func service2instlist(requested_service string) ([]string, error) {
 }
 func choose_instance(instance_list []string, load_balancer_info []string) (*url.URL, error) {
 	//instance_chosen, err := load_balance(instance_list, "round_robin", load_balancer_info)
-	instance_chosen, err := load_balance(instance_list, Config_ptr.load_balancer_policy, load_balancer_info)
+	instance_chosen, err := load_balance(instance_list, Config_ptr.Load_balancer_policy, load_balancer_info)
 	if err != nil {
 		return nil, err
 	}

@@ -61,7 +61,7 @@ func create_auth_token(Body io.ReadCloser) ([]byte, error) {
 	authresp := Signin_Resp_to_Client{
 		Username: temp.Username,
 		Role:     temp.Role,
-		Hash:     mycrypt.CreateMAC(temp.Username+temp.Role, Config_ptr.auth_key),
+		Hash:     mycrypt.CreateMAC(temp.Username+temp.Role, Config_ptr.Auth_key),
 	}
 	b, err := json.Marshal(authresp)
 	if err != nil {

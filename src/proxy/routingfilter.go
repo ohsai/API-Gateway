@@ -16,15 +16,15 @@ var redis_client *redis.Client
 func redis_init(PORT string) {
 	redis_client = redis.NewClient(&redis.Options{
 		//Addr:     "localhost:6379",
-		Addr: Config_ptr.redis_address,
+		Addr: Config_ptr.Redis_address,
 		//Password: "",
-		Password: Config_ptr.redis_password,
+		Password: Config_ptr.Redis_password,
 		//DB:       0,
-		DB: Config_ptr.redis_db,
+		DB: Config_ptr.Redis_db,
 	})
 	pong, err := redis_client.Ping().Result()
 	if err == nil {
-		log.Println("redis client for port ", PORT, " is ready ", pong)
+		log.Println("redis client for port ", PORT, " is ready ", pong) //Needless
 	}
 }
 
@@ -33,7 +33,7 @@ func routing_filter(req *http.Request) (*http.Response, error) {
 	//if request method is get and it exists in redis cache already, bring it to response
 	aim := req.Header.Get("Service")
 
-	if req.Method == "GET" && uri_head(aim) != "auth" && Config_ptr.cache_or_not {
+	if req.Method == "GET" && uri_head(aim) != "auth" && Config_ptr.Cache_or_not {
 		cached_response, err := redis_client.Get(aim).Result()
 		if err == redis.Nil {
 			//just forward it
@@ -66,8 +66,8 @@ func routing_filter(req *http.Request) (*http.Response, error) {
 	}
 	//and cache it
 
-	if req.Method == "GET" && uri_head(aim) != "auth" && Config_ptr.cache_or_not {
-		cache_in, err := httputil.DumpResponse(proxyRes, Config_ptr.cache_or_not)
+	if req.Method == "GET" && uri_head(aim) != "auth" && Config_ptr.Cache_or_not {
+		cache_in, err := httputil.DumpResponse(proxyRes, Config_ptr.Cache_or_not)
 		if err != nil {
 			log.Println("CacheDumpError$", err.Error())
 			return nil, err

@@ -1,13 +1,13 @@
 package main
 
 import (
-	//"log"
+	"log"
 	"net/http"
 	"strings"
 )
 
 func filter_error_handler(filter_name string, w http.ResponseWriter, err error) {
-	//log.Println(filter_name+" terminated proxy with error : ", err.Error())
+	log.Println(filter_name+" terminated proxy with error : ", err.Error())
 	error_type := strings.Split(err.Error(), ERROR_STRING_SEPARATOR)[0]
 	if error_type == AUTHENTICATION_TOKEN_ERROR {
 		w.WriteHeader(http.StatusBadRequest)

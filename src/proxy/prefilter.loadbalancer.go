@@ -21,10 +21,6 @@ func load_balance(instance_list []string, policy string, load_balancer_info []st
 				}
 			}
 
-		} else if policy == "weighted_round_robin" {
-			//put weight in msa.yaml
-			//Too complicated
-
 		} else if policy == "ip_hash" {
 			chosen_index = mycrypt.String_modhash(load_balancer_info[0], len(instance_list))
 
