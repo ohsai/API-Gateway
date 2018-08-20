@@ -1,0 +1,10 @@
+cur_region_code : "ko_KR"
+regions:
+        - 
+         region_code: "ko_KR"
+         available_zone:
+                 - "http://localhost:9000"
+        -
+         region_code: "en_US" 
+         available_zone: 
+                - "http://localhost:9001"

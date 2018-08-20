@@ -2,7 +2,7 @@
 goroot=$GOPATH
 proxy_name=proxy 
 proxy=/bin/$proxy_name
-resource=/src/resource  
+resource=/benchmark/resource  
 elb_path=/bin/elb 
 elb_name=elb 
 

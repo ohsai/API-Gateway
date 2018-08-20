@@ -1,4 +1,0 @@
-region_code: "en_US"
-available_zone:
-        - "http://localhost:6002"
-        - "http://localhost:6003"

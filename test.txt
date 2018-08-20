@@ -1,3 +1,0 @@
-sudo prlimit --nofile=9000 --pid=?
-prlimit --nofile --output RESOURCE,SOFT,HARD --pid ?
-ulimit -n 65536
