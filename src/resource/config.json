@@ -6,7 +6,7 @@
         "MSA_healthcheck_interval": 10,
         "Config_check_interval": 5,
         "Load_balancer_policy": "round_robin",
-        "RS_print_or_not": true,
-        "MSA_print_or_not": true,
+        "RS_print_or_not": false,
+        "MSA_print_or_not": false,
         "Auth_key": "private_key"
 }

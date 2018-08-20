@@ -1,30 +1,52 @@
-all: authServer httpServer proxyServer
+# Merely compiles everything
+all: authServer httpServer proxyServer elbServer
 
-server: authServer httpServer 
-	./bin/bootserver.sh 	
+# Merely Removes all executables, external libraries except sources and configs
+clean:
+	rm -rf ./src/github.com ./src/golang.org ./src/gopkg.in ./pkg ;\
+	rm -rf ./bin/auth_server ./bin/http_server ./bin/elb ./bin/proxy 
 
-proxy: proxyServer elbServer
-	./bin/bootproxy.sh	
 
+############BENCHMARKS##############
+# NEED TO EXECUTE 'make server', 'make proxy' BEFORE BENCHMARKING
+# Regular request benchmark
+# First requests for authentication, and regular requests using the auth token 
 regular: 
-	./bin/regquery.sh 
+	./benchmark/regquery.sh 
 
+# authentication benchmark 
 signin:
-	./bin/signin.sh
+	./benchmark/signin.sh
 
+# Regional routing benchmark
 region: 
-	sudo ./bin/region.sh 
+	./benchmark/region.sh 
 
-authServer:  
-	go install ./src/Auth/authServer.go 
+# Setup several auth and http server for benchmark
+# structure of auth and http server should comply with structure configs in src/resource
+server: authServer httpServer 
+	./benchmark/bootserver.sh 	
+
+# Setup several proxy and elb servers for benchmark
+# structure of proxy and elb should comply with structure configs in src/resource
+proxy: proxyServer elbServer
+	./benchmark/bootproxy.sh	
+#############COMPILE###############
+# Examples of auth server and http server for benchmarking
+authServer: 
+	go get github.com/lib/pq ;\
+	go get golang.org/x/crypto/bcrypt ;\
+	go install ./src/auth_server
 
 httpServer:  
-	go install ./src/http_server/httpServer.go
+	go install ./src/http_server
+
 
 elbServer:  
 	go install ./src/elb
 
-proxy_src = ./src/proxy
-proxyServer: 
-	go install $(proxy_src)
+proxyServer:
+	go get github.com/go-redis/redis ;\
+	go get gopkg.in/yaml.v2 ;\
+	go install ./src/proxy
 
