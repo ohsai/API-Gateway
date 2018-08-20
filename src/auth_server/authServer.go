@@ -29,7 +29,7 @@ func initDB() {
 	var err error
 	// Connect to the postgres db
 	//you might have to change the connection string to add your database credentials
-	db, err = sql.Open("postgres", "user=ubuntu password=9173162abc dbname=mydb sslmode=disable")
+	db, err = sql.Open("postgres", "user=ubuntu password=ubuntu dbname=users sslmode=disable")
 	if err != nil {
 		log.Println(err)
 	}

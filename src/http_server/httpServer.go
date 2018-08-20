@@ -24,7 +24,7 @@ type staticHandler struct {
 }
 
 func (h *staticHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	localPath := "/home/ubuntu/Workspace/haskell/PersonalUse/src/http_server/http_root" + req.URL.Path
+	localPath := os.Getenv("GOPATH") + "/src/http_server/http_root" + req.URL.Path
 	content, err := ioutil.ReadFile(localPath)
 	if err != nil {
 		fmt.Println("HTTPServer error : ", err.Error())
