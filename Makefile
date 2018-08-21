@@ -19,32 +19,40 @@ proxyServer: dependency
 install : proxyServer elbServer 
 
 dependency : 
-	#sh ./benchmark/dependency.sh 
+	sh ./benchmark/dependency.sh 
 
 ############BENCHMARKS##############
+#benchmark: setup
+	#sh ./benchmark/benchmark.sh
+#concurrent:
+	#sh ./benchmark/request.sh concurrent
+#image:
+	#sh ./benchmark/request.sh image
+#large:
+	#sh ./benchmark/request.sh large
+
 # regular request benchmark
 regular: 
-	sh ./benchmark/regquery.sh 
+	sh ./benchmark/request.sh regular 
 
 # authentication benchmark 
 signin:
-	sh ./benchmark/signin.sh
+	sh ./benchmark/request.sh signin
 
 # Regional routing benchmark
 region: 
-	sh ./benchmark/region.sh 
+	sh ./benchmark/request.sh regional
 
 # Setup several auth and http server for benchmark
 # structure of auth and http server should comply with structure configs in src/resource
-serverexec: server  
-	sh ./benchmark/bootserver.sh 	
+server:  
+	sh ./benchmark/boot.sh server 	
 
 # Setup several proxy and elb servers for benchmark
 # structure of proxy and elb should comply with structure configs in src/resource
-proxyexec: install 
-	sh ./benchmark/bootproxy.sh	
+proxy: install 
+	sh ./benchmark/boot.sh proxy 
 
-server: authServer httpServer 
 authServer: 
 	go get github.com/lib/pq ;\
 	go get golang.org/x/crypto/bcrypt ;\
@@ -53,3 +61,5 @@ authServer:
 httpServer:  
 	go install ./src/http_server
 
+setup:
+	sh ./benchmark/setup.sh
