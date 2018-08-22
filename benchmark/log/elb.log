@@ -1,0 +1,14 @@
+2018/08/22 05:38:13 ELB$Region Structure :
+   ko_KR
+     http://localhost:6000
+     http://localhost:6001
+ELB$cur region code :  ko_KR
+2018/08/22 05:38:13 ELB$Region Structure :
+   en_US
+     http://localhost:6002
+     http://localhost:6003
+ELB$cur region code :  en_US
+2018/08/22 05:38:13 port scan on  http://localhost:6000  finished with error :  exit status 1
+2018/08/22 05:38:13 port scan on  http://localhost:6002  finished with error :  exit status 1
+2018/08/22 05:38:13 port scan on  http://localhost:6001  finished with error :  exit status 1
+2018/08/22 05:38:13 port scan on  http://localhost:6003  finished with error :  exit status 1

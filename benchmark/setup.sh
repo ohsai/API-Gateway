@@ -1,7 +1,6 @@
 #!/bin/sh
 
 
-
 install_if_not()
 {
         package_name=$1

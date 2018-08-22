@@ -22,36 +22,34 @@ dependency :
 	sh ./benchmark/dependency.sh 
 
 ############BENCHMARKS##############
-#benchmark: setup
-	#sh ./benchmark/benchmark.sh
-#concurrent:
-	#sh ./benchmark/request.sh concurrent
-#image:
-	#sh ./benchmark/request.sh image
-#large:
-	#sh ./benchmark/request.sh large
-
-# regular request benchmark
-regular: 
+benchmark: backend install setup
+	sh ./benchmark/boot.sh benchmark 
+	sh ./benchmark/request.sh benchmark
+	sh ./benchmark/boot.sh after_bench
+concurrent: 	# highly concurrent request benchmark
+	sh ./benchmark/request.sh concurrent
+image: 		# image type load req benchmark
+	sh ./benchmark/request.sh image
+large: 		#large load req benchmark
+	sh ./benchmark/request.sh large
+regular: 	# regular request benchmark
 	sh ./benchmark/request.sh regular 
-
-# authentication benchmark 
-signin:
+signin: 	# authentication benchmark 
 	sh ./benchmark/request.sh signin
-
-# Regional routing benchmark
-region: 
+region:  	# Regional routing benchmark
 	sh ./benchmark/request.sh regional
 
 # Setup several auth and http server for benchmark
 # structure of auth and http server should comply with structure configs in src/resource
-server:  
+server:  backend
 	sh ./benchmark/boot.sh server 	
 
 # Setup several proxy and elb servers for benchmark
 # structure of proxy and elb should comply with structure configs in src/resource
 proxy: install 
 	sh ./benchmark/boot.sh proxy 
+
+backend: authServer httpServer 
 
 authServer: 
 	go get github.com/lib/pq ;\

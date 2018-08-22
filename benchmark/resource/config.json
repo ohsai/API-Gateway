@@ -7,6 +7,6 @@
         "Config_check_interval": 5,
         "Load_balancer_policy": "round_robin",
         "RS_print_or_not": false,
-        "MSA_print_or_not": false,
+        "MSA_print_or_not": true,
         "Auth_key": "private_key"
 }
