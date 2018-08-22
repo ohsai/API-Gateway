@@ -1,0 +1,12 @@
+#!/bin/sh
+
+#if golang 1.10 not installed, install it
+#if golang 1.10 installed but not on path? 
+export GOPATH="$(pwd)"
+#if go 1.10 does not exist in path
+if [ $(echo "$PATH" |grep -Fxq "/usr/lib/go-1.10/bin") ] ; then 
+        echo "Go 1.10 exist in path"
+else 
+        echo "Go 1.10 does not exist in path"
+        export PATH="/usr/lib/go-1.10/bin:$PATH"
+fi

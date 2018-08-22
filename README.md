@@ -1,4 +1,7 @@
-Done these in 3 weeks
+# Simple API Gateway  
+Written in Golang  
+samsung electronics 4 week intern project of Oh Hyun Seok  
+  
 ## What I've implemented
 * Transparent proxy for Micro Service Architecture : yaml format MSA structure
 * Authentication / Authorization : HMAC, client token
@@ -15,6 +18,7 @@ Done these in 3 weeks
 - src/auth_server : naive authentication server  
 - src/resource : MSA / Regional elb / Regional proxy structure, Configuration data
 - benchmark : benchmark script
+- benchmark/log : save stdout logs of proxy/elb/backend during benchmark
 ******
 ## HOWTO Setup & execute  
 ### Setup
@@ -25,7 +29,8 @@ git checkout APIGW
 ```
 #### install
 ```console
-#benchmark/dependency.sh
+# At root folder of this repo
+source ./path
 make install
 ```
 ### execute
@@ -37,13 +42,16 @@ proxy [PORT] [PATH to MSA structure] [PATH to Regional elb structure] [PATH to C
 ### benchmarking
 #### Setup
 ```console
+source ~/.path
 make benchmark 
-#benchmark/setup.sh
 ```
-command `make serverexec` creates backend server structure independently, making it easy to monitor.  
-command `make proxyexec`  creates elb and proxy server structure independently, making it easy to monitor.  
-command `make signin` benchmarks with a load of authentication requests.  
-command `make regular` benchmarks with a load of regular http requests with auth token header.  
-command `make region` benchmarks with a load of requests for other regional proxy.  
+`make server` creates backend server structure independently, making it easy to monitor.  
+`make proxy`  creates elb and proxy server structure independently, making it easy to monitor.  
+`make signin` benchmarks with signin authentication requests.  
+`make regular` benchmarks with regular http requests with auth token header.  
+`make region` benchmarks with requests for other regional proxy.  
+`make concurrent` benchmarks with highly concurrent request load.
+`make image` benchmarks with requests for image file.
+`make large` benchmarks with large size pdf file.
 
 

@@ -4,7 +4,8 @@ all: authServer httpServer proxyServer elbServer
 # Merely Removes all executables, external libraries except sources and configs
 clean:
 	rm -rf ./src/github.com ./src/golang.org ./src/gopkg.in ./pkg ;\
-	rm -rf ./bin/auth_server ./bin/http_server ./bin/elb ./bin/proxy 
+	rm -rf ./bin/auth_server ./bin/http_server ./bin/elb ./bin/proxy ;\
+	rm -rf ./benchmark/log/*
 #############Install###############
 elbServer: dependency
 	go install ./src/elb
@@ -16,10 +17,10 @@ proxyServer: dependency
 
 install : proxyServer elbServer 
 
-dependency : 
+dependency :
 	sh ./benchmark/dependency.sh 
 ############BENCHMARKS##############
-benchmark: backend install setup
+benchmark: install backend setup
 	sh ./benchmark/boot.sh benchmark 
 	sh ./benchmark/request.sh benchmark
 	sh ./benchmark/boot.sh after_bench
