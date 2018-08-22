@@ -26,6 +26,7 @@ if psql -lqt | cut -d \| -f 1 | grep -qw users |grep 0; then
        sudo -u postgres createdb users
 fi 
 sudo -u postgres psql -c "alter user ubuntu with encrypted password 'ubuntu'"
+sudo -u postgres psql -d users -c "GRANT ALL PRIVILEGES ON TABLE users to ubuntu"
 PGPASSWORD=ubuntu psql -d users -U ubuntu -c 'drop table users;' -h localhost 
 PGPASSWORD=ubuntu psql -d users -U ubuntu -c 'create table users( username text primary key, password text,role text );' -h localhost
 echo "Benchmark authentication data store created"

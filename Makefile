@@ -5,9 +5,7 @@ all: authServer httpServer proxyServer elbServer
 clean:
 	rm -rf ./src/github.com ./src/golang.org ./src/gopkg.in ./pkg ;\
 	rm -rf ./bin/auth_server ./bin/http_server ./bin/elb ./bin/proxy 
-
 #############Install###############
-
 elbServer: dependency
 	go install ./src/elb
 
@@ -20,7 +18,6 @@ install : proxyServer elbServer
 
 dependency : 
 	sh ./benchmark/dependency.sh 
-
 ############BENCHMARKS##############
 benchmark: backend install setup
 	sh ./benchmark/boot.sh benchmark 
@@ -39,25 +36,18 @@ signin: 	# authentication benchmark
 region:  	# Regional routing benchmark
 	sh ./benchmark/request.sh regional
 
-# Setup several auth and http server for benchmark
 # structure of auth and http server should comply with structure configs in src/resource
 server:  backend
 	sh ./benchmark/boot.sh server 	
-
-# Setup several proxy and elb servers for benchmark
 # structure of proxy and elb should comply with structure configs in src/resource
 proxy: install 
 	sh ./benchmark/boot.sh proxy 
-
 backend: authServer httpServer 
-
 authServer: 
 	go get github.com/lib/pq ;\
 	go get golang.org/x/crypto/bcrypt ;\
 	go install ./src/auth_server
-
 httpServer:  
 	go install ./src/http_server
-
 setup:
 	sh ./benchmark/setup.sh

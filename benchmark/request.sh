@@ -112,6 +112,7 @@ fi
 #concurrent
 if [ $arg = "concurrent" ] || [ $arg = "benchmark" ] ; then 
 printf "\nConcurrent request test\n"
+ulimit -n 9000
 printf " * Load : \n "
 result=$(ab -q -c $concurrency_test -n $reqno_normal -H "AuthToken: $(http POST localhost:9000/auth/signin username=XXXtentacion password=makeouthill666)" http://localhost:9000/video/test.css)
 get_essential "$result"
