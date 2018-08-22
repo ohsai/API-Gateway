@@ -65,10 +65,22 @@ curl -si  --header "AuthToken:$(http POST localhost:9001/auth/signin username=XX
 printf "Call for kr region code at en region : " 
 curl  -si --header "AuthToken:$(http POST localhost:9000/auth/signin username=XXXtentacion password=makeouthill666)" --header "Accept-Language: en_US" http://localhost:9000/video/test.css \
        | head -n 1
+printf "Call for service only in kr : " 
+curl  -si --header "AuthToken:$(http POST localhost:9000/auth/signin username=XXXtentacion password=makeouthill666)" --header "Accept-Language: ko_KR" http://localhost:9000/image/test.css \
+       | head -n 1
+printf "Call for service only in en : " 
+curl  -si --header "AuthToken:$(http POST localhost:9001/auth/signin username=XXXtentacion password=makeouthill666)" --header "Accept-Language: en_US" http://localhost:9001/sound/test.css \
+       | head -n 1
 printf " * Wrong : \n"
 #nonexistent region
 printf "Call for nonexistent region code : "
 curl -si --header "AuthToken:$(http POST localhost:9000/auth/signin username=XXXtentacion password=makeouthill666)" --header "Accept-Language: de_EU" http://localhost:9000/video/test.css \
+       | head -n 1
+printf "Call for service nonexistent in kr : " 
+curl -si --header "AuthToken:$(http POST localhost:9000/auth/signin username=XXXtentacion password=makeouthill666)" --header "Accept-Language: ko_KR" http://localhost:9000/sound/test.css \
+       | head -n 1
+printf "Call for service nonexistent in en : " 
+curl -si --header "AuthToken:$(http POST localhost:9001/auth/signin username=XXXtentacion password=makeouthill666)" --header "Accept-Language: en_US" http://localhost:9001/image/test.css \
        | head -n 1
 printf " * Load : \n "
 result=$(ab -q -c $concurrency_normal -n $reqno_normal -H "AuthToken: $(http POST localhost:9000/auth/signin username=XXXtentacion password=makeouthill666)" -H "Accept-Language: en_US" http://localhost:9000/video/index.html)
@@ -82,6 +94,8 @@ printf " * Right : Call for every service\n"
 curl -si --header "AuthToken:$(http POST localhost:9000/auth/signin username=XXXtentacion password=makeouthill666)" http://localhost:9000/video/test.css \
         | head -n 1
 curl -si --header "AuthToken:$(http POST localhost:9000/auth/signin username=XXXtentacion password=makeouthill666)" http://localhost:9000/image/index.html \
+        | head -n 1
+curl -si --header "AuthToken:$(http POST localhost:9001/auth/signin username=XXXtentacion password=makeouthill666)" http://localhost:9001/sound/index.html \
         | head -n 1
 #with header
 printf "Call with region code header : "

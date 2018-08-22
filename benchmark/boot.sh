@@ -52,10 +52,10 @@ if [ $arg = 'proxy' ] || [ $arg = 'benchmark' ] ; then
                 prlimit --nofile --output RESOURCE,SOFT,HARD --pid $elbpid 
         done 
         { 
-                $goroot$proxy 6000 $goroot$resource/msa.yaml $goroot$resource/rs_kr.yaml $goroot$resource/config.json &
-        $goroot$proxy 6001 $goroot$resource/msa.yaml $goroot$resource/rs_kr.yaml $goroot$resource/config.json &
-        $goroot$proxy 6002 $goroot$resource/msa.yaml $goroot$resource/rs_en.yaml $goroot$resource/config.json &
-        $goroot$proxy 6003 $goroot$resource/msa.yaml $goroot$resource/rs_en.yaml $goroot$resource/config.json & 
+                $goroot$proxy 6000 $goroot$resource/msa_kr.yaml $goroot$resource/rs_kr.yaml $goroot$resource/config.json &
+        $goroot$proxy 6001 $goroot$resource/msa_kr.yaml $goroot$resource/rs_kr.yaml $goroot$resource/config.json &
+        $goroot$proxy 6002 $goroot$resource/msa_en.yaml $goroot$resource/rs_en.yaml $goroot$resource/config.json &
+        $goroot$proxy 6003 $goroot$resource/msa_en.yaml $goroot$resource/rs_en.yaml $goroot$resource/config.json & 
 } > $proxy_log_path 2>&1
         echo "proxy fd limit modify"
         for pxypid in $(pgrep proxy) ; do 

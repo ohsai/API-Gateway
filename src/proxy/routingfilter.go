@@ -7,9 +7,11 @@ import (
 	"log"
 	"net/http"
 	"net/http/httputil"
+	"time"
 )
 
 var redis_client *redis.Client
+var cache_duration time.Duration = time.Minute //default duration
 
 //const cache_or_not = true
 
@@ -26,6 +28,7 @@ func redis_init(PORT string) {
 	if err == nil {
 		log.Println("redis client for port ", PORT, " is ready ", pong) //Needless
 	}
+	cache_duration, _ = time.ParseDuration("30s") //set duration
 }
 
 func routing_filter(req *http.Request) (*http.Response, error) {
@@ -72,7 +75,7 @@ func routing_filter(req *http.Request) (*http.Response, error) {
 			log.Println("CacheDumpError$", err.Error())
 			return nil, err
 		}
-		err = redis_client.Set(aim, string(cache_in), 0).Err()
+		err = redis_client.Set(aim, string(cache_in), cache_duration).Err()
 		if err != nil {
 			log.Println("CacheStoreError$", err.Error())
 			//failed to cache

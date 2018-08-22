@@ -50,8 +50,8 @@ make benchmark
 `make signin` benchmarks with signin authentication requests.  
 `make regular` benchmarks with regular http requests with auth token header.  
 `make region` benchmarks with requests for other regional proxy.  
-`make concurrent` benchmarks with highly concurrent request load.
-`make image` benchmarks with requests for image file.
-`make large` benchmarks with large size pdf file.
+`make concurrent` benchmarks with highly concurrent request load.  
+`make image` benchmarks with requests for image file.  
+`make large` benchmarks with large size pdf file.  
 
 
