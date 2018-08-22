@@ -20,7 +20,7 @@ install_if_not()
 if [ $(dpkg-query -W -f='${Status}' $package_name 2>/dev/null | grep -c "ok installed") -eq 0 ];
 then
         echo "$package_name install"
-        sudo apt-get install -y package_name;
+        sudo apt-get install -y $package_name;
 else 
         echo "$package_name already installed"
 fi

@@ -5,7 +5,7 @@ all: authServer httpServer proxyServer elbServer
 clean:
 	rm -rf ./src/github.com ./src/golang.org ./src/gopkg.in ./pkg ;\
 	rm -rf ./bin/auth_server ./bin/http_server ./bin/elb ./bin/proxy ;\
-	rm -rf ./benchmark/log/*
+	rm -rf ./benchmark/log/*.log
 #############Install###############
 elbServer: dependency
 	go install ./src/elb
