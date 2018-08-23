@@ -58,12 +58,12 @@ printf "Request without region code : "
 curl -si --header "AuthToken:$(http POST localhost:9000/auth/signin username=XXXtentacion password=makeouthill666)" http://localhost:9000/video/test.css \
        | head -n 1
 #kr region call on en
-printf "Request for en region code at kr region : " 
-curl -si  --header "AuthToken:$(http POST localhost:9001/auth/signin username=XXXtentacion password=makeouthill666)" --header "Accept-Language: ko_KR" http://localhost:9001/video/test.css \
+printf "Request for kr region code and service only in kr at en region : " 
+curl -si  --header "AuthToken:$(http POST localhost:9001/auth/signin username=XXXtentacion password=makeouthill666)" --header "Accept-Language: ko_KR" http://localhost:9001/image/test.css \
        | head -n 1
 #en_us region call on kr
-printf "Request for kr region code at en region : " 
-curl  -si --header "AuthToken:$(http POST localhost:9000/auth/signin username=XXXtentacion password=makeouthill666)" --header "Accept-Language: en_US" http://localhost:9000/video/test.css \
+printf "Request for en region code and service only in en at kr region : " 
+curl  -si --header "AuthToken:$(http POST localhost:9000/auth/signin username=XXXtentacion password=makeouthill666)" --header "Accept-Language: en_US" http://localhost:9000/sound/test.css \
        | head -n 1
 printf "Request for service only in kr : " 
 curl  -si --header "AuthToken:$(http POST localhost:9000/auth/signin username=XXXtentacion password=makeouthill666)" --header "Accept-Language: ko_KR" http://localhost:9000/image/test.css \

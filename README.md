@@ -10,7 +10,10 @@ samsung electronics 4 week intern project of Oh Hyun Seok
 * Static Response Cacheing : Redis
 * Configuration reloading without restart : json format config
 * Load Balancer in front of APIGW
-* Error handling
+* Error handling  
+  
+###Architecture
+![apigw-architecture](apigw-doc.png)  
   
 ## Where I've implemented
 - src/proxy : apigw 
@@ -29,7 +32,7 @@ samsung electronics 4 week intern project of Oh Hyun Seok
   
 #### Environment & Dependency
 - Ubuntu 16.04 LTS
-- make , git
+- make , git  
 (packages installed during setup)
 - golang-1.10
 - redis-server
@@ -57,7 +60,7 @@ proxy [PORT] [PATH to MSA structure] [PATH to Regional elb structure] [PATH to C
 ```
   
 ### benchmarking
-  
+Benchmark includes my own qualitative tests and apache benchmark load test. Following one command will install everything.  
 ```console
 source ~/.path
 make benchmark 
@@ -73,6 +76,10 @@ Test commands below should be executed after benchmark proxies and backend serve
 `make image` benchmarks with requests for image file.  
 `make large` benchmarks with large size pdf file.  
 
+#### Server structure used for benchmark  
+  
+![benchmarkstructure](apigw-doc2.png)  
+  
 #### Example benchmark result
 Benchmark on AWS EC2 c5.2xlarge Ubuntu 16.04 LTS
 
@@ -106,8 +113,8 @@ Transfer rate:          69.95 [Kbytes/sec] received
 ====== Regional request test ======
  * Right :
 Request without region code : HTTP/1.1 200 OK
-Request for en region code at kr region : HTTP/1.1 200 OK
-Request for kr region code at en region : HTTP/1.1 200 OK
+Request for kr region code and service only in kr at en region : HTTP/1.1 200 OK
+Request for en region code and service only in en at kr region : HTTP/1.1 200 OK
 Request for service only in kr : HTTP/1.1 200 OK
 Request for service only in en : HTTP/1.1 200 OK
  * Wrong : 
