@@ -3,8 +3,8 @@
 arg=$1
 concurrency_normal=20
 concurrency_test=2000
-reqno_normal=5000
-reqno_test=1000
+reqno_normal=30000
+reqno_test=100000
 
 get_essential()
 {
@@ -27,7 +27,7 @@ fi
 #signin
 if [ $arg = "signin" ] || [ $arg = "benchmark" ] ; then 
 printf "\nSignin request test\n"
-printf " * Right : Call for every signed up id/pw\n"
+printf " * Right : Request for every signed up id/pw\n"
 http -h POST localhost:9000/auth/signin username=Quavo password=stirfry  | head -n 1
 http -h POST localhost:9000/auth/signin username=XXXtentacion password=makeouthill666 | head -n 1
 http -h POST localhost:9001/auth/signin username=alpha password=beta | head -n 1
@@ -54,32 +54,32 @@ if [ $arg = "regional" ] || [ $arg = "benchmark" ] ; then
 printf "\nRegional request test\n"
 printf " * Right :\n"
 #without region -> just on here
-printf "Call without region code : "
+printf "Request without region code : "
 curl -si --header "AuthToken:$(http POST localhost:9000/auth/signin username=XXXtentacion password=makeouthill666)" http://localhost:9000/video/test.css \
        | head -n 1
 #kr region call on en
-printf "Call for en region code at kr region : " 
+printf "Request for en region code at kr region : " 
 curl -si  --header "AuthToken:$(http POST localhost:9001/auth/signin username=XXXtentacion password=makeouthill666)" --header "Accept-Language: ko_KR" http://localhost:9001/video/test.css \
        | head -n 1
 #en_us region call on kr
-printf "Call for kr region code at en region : " 
+printf "Request for kr region code at en region : " 
 curl  -si --header "AuthToken:$(http POST localhost:9000/auth/signin username=XXXtentacion password=makeouthill666)" --header "Accept-Language: en_US" http://localhost:9000/video/test.css \
        | head -n 1
-printf "Call for service only in kr : " 
+printf "Request for service only in kr : " 
 curl  -si --header "AuthToken:$(http POST localhost:9000/auth/signin username=XXXtentacion password=makeouthill666)" --header "Accept-Language: ko_KR" http://localhost:9000/image/test.css \
        | head -n 1
-printf "Call for service only in en : " 
+printf "Request for service only in en : " 
 curl  -si --header "AuthToken:$(http POST localhost:9001/auth/signin username=XXXtentacion password=makeouthill666)" --header "Accept-Language: en_US" http://localhost:9001/sound/test.css \
        | head -n 1
 printf " * Wrong : \n"
 #nonexistent region
-printf "Call for nonexistent region code : "
+printf "Request for nonexistent region code : "
 curl -si --header "AuthToken:$(http POST localhost:9000/auth/signin username=XXXtentacion password=makeouthill666)" --header "Accept-Language: de_EU" http://localhost:9000/video/test.css \
        | head -n 1
-printf "Call for service nonexistent in kr : " 
+printf "Request for service nonexistent in kr : " 
 curl -si --header "AuthToken:$(http POST localhost:9000/auth/signin username=XXXtentacion password=makeouthill666)" --header "Accept-Language: ko_KR" http://localhost:9000/sound/test.css \
        | head -n 1
-printf "Call for service nonexistent in en : " 
+printf "Request for service nonexistent in en : " 
 curl -si --header "AuthToken:$(http POST localhost:9001/auth/signin username=XXXtentacion password=makeouthill666)" --header "Accept-Language: en_US" http://localhost:9001/image/test.css \
        | head -n 1
 printf " * Load : \n "
@@ -90,7 +90,7 @@ fi
 #regular
 if [ $arg = "regular" ] || [ $arg = "benchmark" ]; then 
 printf "\nRegular request test\n"
-printf " * Right : Call for every service\n"
+printf " * Right : Request for every service\n"
 curl -si --header "AuthToken:$(http POST localhost:9000/auth/signin username=XXXtentacion password=makeouthill666)" http://localhost:9000/video/test.css \
         | head -n 1
 curl -si --header "AuthToken:$(http POST localhost:9000/auth/signin username=XXXtentacion password=makeouthill666)" http://localhost:9000/image/index.html \
@@ -98,24 +98,24 @@ curl -si --header "AuthToken:$(http POST localhost:9000/auth/signin username=XXX
 curl -si --header "AuthToken:$(http POST localhost:9001/auth/signin username=XXXtentacion password=makeouthill666)" http://localhost:9001/sound/index.html \
         | head -n 1
 #with header
-printf "Call with region code header : "
+printf "Request with region code header : "
 curl -si --header "AuthToken:$(http POST localhost:9000/auth/signin username=XXXtentacion password=makeouthill666)" --header "Accept-Language: ko_KR" http://localhost:9000/video/test.css \
         | head -n 1
 printf " * Wrong : \n"
 #no resource
-printf "Call for nonexistent resource : "
+printf "Request for nonexistent resource : "
 curl -si --header "AuthToken:$(http POST localhost:9000/auth/signin username=XXXtentacion password=makeouthill666)" --header "Accept-Language: ko_KR" http://localhost:9000/image/test.hs \
         | head -n 1
 #no resource on other service
-printf "Call for nonexistent resource in other service : "
+printf "Request for nonexistent resource in other service : "
 curl -si --header "AuthToken:$(http POST localhost:9000/auth/signin username=XXXtentacion password=makeouthill666)" --header "Accept-Language: ko_KR" http://localhost:9000/video/test.hs \
         | head -n 1
 #wrong auth token
-printf "Call with wrong auth token : "
+printf "Request with wrong auth token : "
 curl -si --header "AuthToken:{nice:2222}" --header "Accept-Language: ko_KR" http://localhost:9000/video/test.hs \
         | head -n 1
 #no auth header
-printf "Call without auth token header : "
+printf "Request without auth token header : "
 curl -si http://localhost:9000/video/test.hs \
         | head -n 1
 printf " * Load : \n "

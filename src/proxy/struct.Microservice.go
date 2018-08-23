@@ -19,7 +19,7 @@ type MSA struct {
 
 var MSA_ptr *MSA
 
-func yamlDecoder(MSAyamlpath string) (*MSA, error) {
+func yamlDecoder(MSAyamlpath string) (*MSA, error) { //read msa file
 	msa_out := new(MSA)
 	yaml_file, yaml_open_err := ioutil.ReadFile(MSAyamlpath)
 	if yaml_open_err != nil {
@@ -31,12 +31,10 @@ func yamlDecoder(MSAyamlpath string) (*MSA, error) {
 		log.Println("error while unmarshal on yaml", yaml_decode_err.Error())
 		return msa_out, yaml_decode_err
 	}
-	//MSA_print(msa_out)
-	//log.Printf("---MSA : \n%+v\n", msa_out)
 	return msa_out, nil
 }
-func MSA_print(MSA_in *MSA) {
-	log.Println("PXY$Structure of ", MSA_in.Name, " :")
+func MSA_print(MSA_in *MSA) { //pretty print
+	fmt.Println("PXY$MSAStructure [", MSA_in.Name, "] :")
 	for _, cur_service := range MSA_in.Service {
 		fmt.Println("  ", cur_service.Name)
 		for _, cur_instance := range cur_service.Instance {

@@ -2,9 +2,8 @@ package main
 
 import (
 	"encoding/json"
-	"io"
-	//"log"
 	"errors"
+	"io"
 	"net/http"
 	"proxy/mycrypt"
 )
@@ -12,10 +11,8 @@ import (
 func post_filter(proxyRes *http.Response, w http.ResponseWriter) error {
 	req_serv := proxyRes.Header.Get("Service")
 	if req_serv == "" {
-		return errors.New("Service header does not exist while proxy process")
+		return errors.New("Service header not appended by proxy")
 	}
-
-	//log.Println(proxyRes.Status)
 	var err error
 	if uri_head(req_serv) == "auth" {
 		err = format_response_auth(proxyRes, w)
@@ -28,30 +25,26 @@ func post_filter(proxyRes *http.Response, w http.ResponseWriter) error {
 	return nil
 }
 func format_response_auth(proxyRes *http.Response, w http.ResponseWriter) error {
-
 	req_serv := proxyRes.Header.Get("Service")
+	//if signin, create Auth token
 	if uri_head(uri_tail(req_serv)) == "signin" && proxyRes.StatusCode == 200 {
-		//if signin
-		// Create Auth token
 		b, err := create_auth_token(proxyRes.Body)
 		if err != nil {
 			return err
 		}
-		//copy header
 		copy_header(proxyRes.Header, w, "Content-Length")
-		//Supplementary Header
 		w.Header().Set("Content-Type", "application/json")
-		//Deep copy body
-		_, err = w.Write(b)
+		_, err = w.Write(b) //write auth token to response body
 		if err != nil {
 			return err
 		}
 		return nil
 	} else {
-		//if signup or wrong responseresponse
 		return copy_response(proxyRes, w)
 	}
 }
+
+//Create json type auth token
 func create_auth_token(Body io.ReadCloser) ([]byte, error) {
 	temp := &Signin_Resp_from_Auth{}
 	jsonparseerr := json.NewDecoder(Body).Decode(temp)
@@ -74,9 +67,7 @@ func format_response(proxyRes *http.Response, w http.ResponseWriter) error {
 }
 func copy_response(proxyRes *http.Response, w http.ResponseWriter) error {
 	w.WriteHeader(proxyRes.StatusCode)
-	// copy header
 	copy_header(proxyRes.Header, w)
-	//copy body
 	if _, err := io.Copy(w, proxyRes.Body); err != nil {
 		return err
 	}
@@ -87,12 +78,10 @@ func copy_header(response_headers http.Header, w http.ResponseWriter, decline_he
 	for cur_header, values := range response_headers {
 		if !contains(decline_header, cur_header) {
 			for _, value := range values {
-
 				w.Header().Add(cur_header, value)
 			}
 		}
 	}
-
 }
 func contains(s []string, e string) bool {
 	for _, a := range s {

@@ -5,7 +5,6 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"hash/fnv"
-	//"log"
 )
 
 func CreateMAC(message, key string) []byte {
@@ -19,7 +18,7 @@ func CheckMAC(message string, messageMAC []byte, key string) bool {
 	expectedMAC := CreateMAC(message, key)
 	return hmac.Equal([]byte(messageMAC), expectedMAC)
 }
-func String_modhash(ip_in string, mod int) int {
+func String_modhash(ip_in string, mod int) int { //custom bound hash
 	h := fnv.New32a()
 	h.Write([]byte(ip_in))
 	output := int(h.Sum32())

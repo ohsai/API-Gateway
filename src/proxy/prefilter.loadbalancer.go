@@ -6,12 +6,13 @@ import (
 	"proxy/mycrypt"
 )
 
+//Implemented round robin, ip_hash, url_hash, random method
+
 func load_balance(instance_list []string, policy string, load_balancer_info []string) (string, error) {
 	var instance_chosen string = ""
 	var chosen_index int
 	for i := 0; i < len(instance_list); i++ { // retry
-		//Implement round robin / weighted_round_robin / random
-		if policy == "round_robin" { //Assume that service for uri exists
+		if policy == "round_robin" {
 			requested_service := uri_head(load_balancer_info[1])
 			for j, cur_service := range HealthChecker_ptr.Service {
 				if requested_service == cur_service.Name {
@@ -20,21 +21,17 @@ func load_balance(instance_list []string, policy string, load_balancer_info []st
 					break
 				}
 			}
-
+			// existence of service handled beforehand
 		} else if policy == "ip_hash" {
 			chosen_index = mycrypt.String_modhash(load_balancer_info[0], len(instance_list))
-
-			//need url
 		} else if policy == "url_hash" {
 			chosen_index = mycrypt.String_modhash(
 				load_balancer_info[0]+load_balancer_info[1], len(instance_list))
-			//need url
 		} else { //random
 			chosen_index = rand.Intn(len(instance_list))
 		}
 		instance_chosen = instance_list[chosen_index]
-		//Implement one_more_check, retry
-		if err := ping(instance_chosen); err == nil {
+		if err := ping(instance_chosen); err == nil { //Check once more
 			return instance_chosen, nil
 		}
 	}

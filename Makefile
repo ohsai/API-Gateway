@@ -18,7 +18,7 @@ proxyServer: dependency
 install : proxyServer elbServer 
 
 dependency :
-	sh ./benchmark/dependency.sh 
+	sh ./install/dependency.sh 
 ############BENCHMARKS##############
 benchmark: install backend setup
 	sh ./benchmark/boot.sh benchmark 
@@ -51,4 +51,4 @@ authServer:
 httpServer:  
 	go install ./src/http_server
 setup:
-	sh ./benchmark/setup.sh
+	sh ./install/setup.sh

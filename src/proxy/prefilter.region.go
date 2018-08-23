@@ -19,7 +19,7 @@ type Region struct {
 
 var RS_ptr *Region_Structure
 
-func yamlDecoderRS(RSyamlpath string) (*Region_Structure, error) {
+func yamlDecoderRS(RSyamlpath string) (*Region_Structure, error) { //Read region structure file
 	rs_out := new(Region_Structure)
 	yaml_file, yaml_open_err := ioutil.ReadFile(RSyamlpath)
 	if yaml_open_err != nil {
@@ -34,7 +34,7 @@ func yamlDecoderRS(RSyamlpath string) (*Region_Structure, error) {
 	RS_print(rs_out)
 	return rs_out, nil
 }
-func RS_print(RS_in *Region_Structure) {
+func RS_print(RS_in *Region_Structure) { //Pretty print
 	log.Println("PXY$ Region ELB :")
 	for _, cur_region := range RS_in.Regions {
 		fmt.Println("  ", cur_region.Region_code)
@@ -42,13 +42,12 @@ func RS_print(RS_in *Region_Structure) {
 			fmt.Println("    ", cur_AZ)
 		}
 	}
-	fmt.Println("cur region code : ", RS_in.Cur_region_code)
+	fmt.Println("current region : ", RS_in.Cur_region_code)
 }
-func region2AZlist(region_code_in string) ([]string, error) { //select one of region
+func region2AZlist(region_code_in string) ([]string, error) {
 	var AZ_list []string
-	//requested_service := uri_head(uri_input)
 	available_zone_flag := false
-	for _, cur_region := range RS_ptr.Regions {
+	for _, cur_region := range RS_ptr.Regions { //find from region structure
 		if region_code_in == cur_region.Region_code {
 			AZ_list = cur_region.Available_Zone
 			available_zone_flag = true
@@ -64,6 +63,5 @@ func region2AZlist(region_code_in string) ([]string, error) { //select one of re
 			errors.New(NO_AVAILABLE_INSTANCE_ERROR + ERROR_STRING_SEPARATOR +
 				"No Available Zone instance for particular locale")
 	}
-	//log.Println(inst_list)
 	return AZ_list, nil
 }

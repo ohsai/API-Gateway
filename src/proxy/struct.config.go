@@ -8,9 +8,7 @@ import (
 	"time"
 )
 
-//This should comply to src/resource/config.json
-//All of struct's fields must be Capitalized for external use
-type Configuration struct {
+type Configuration struct { //should comply to config input file
 	Cache_or_not             bool   `json:"Cache_or_not"`
 	Redis_address            string `json:"Redis_address"`
 	Redis_password           string `json:"Redis_password"`
@@ -23,7 +21,7 @@ type Configuration struct {
 	Auth_key                 string `json:"Auth_key"`
 }
 
-func jsonDecoderConfig(Configjsonpath string) (*Configuration, error) {
+func jsonDecoderConfig(Configjsonpath string) (*Configuration, error) { //read file
 	config_out := new(Configuration)
 	json_file, json_open_err := ioutil.ReadFile(Configjsonpath)
 	if json_open_err != nil {
@@ -40,7 +38,7 @@ func jsonDecoderConfig(Configjsonpath string) (*Configuration, error) {
 
 var Config_ptr *Configuration
 
-func config_manager_init(MSAyamlpath string, RSyamlpath string, Configjsonpath string) error {
+func config_manager_init(MSAyamlpath string, RSyamlpath string, Configjsonpath string) error { //initial read
 	var err error
 	MSA_ptr, err = yamlDecoder(MSAyamlpath)
 	if err != nil {
@@ -57,7 +55,7 @@ func config_manager_init(MSAyamlpath string, RSyamlpath string, Configjsonpath s
 		log.Println(err.Error())
 		return err
 	}
-	go config_manager(MSAyamlpath, RSyamlpath, Configjsonpath)
+	go config_manager(MSAyamlpath, RSyamlpath, Configjsonpath) //active check
 	return nil
 }
 func config_manager(MSAyamlpath string, RSyamlpath string, Configjsonpath string) {
@@ -69,7 +67,7 @@ func config_manager(MSAyamlpath string, RSyamlpath string, Configjsonpath string
 	var configmodtime time.Time = configstatinit.ModTime()
 	for {
 		time.Sleep(time.Duration(Config_ptr.Config_check_interval) * time.Second)
-
+		//check modification
 		msastat, err := os.Stat(MSAyamlpath)
 		if err == nil {
 			if !(msastat.ModTime().Equal(msamodtime)) {
@@ -110,7 +108,5 @@ func config_manager(MSAyamlpath string, RSyamlpath string, Configjsonpath string
 				}
 			}
 		}
-		//log.Printf("%+v", Config_ptr)
-
 	}
 }
