@@ -13,7 +13,7 @@ samsung electronics 4 week intern project of Oh Hyun Seok
 * Error handling  
   
 ###Architecture  
-![apigw-architecture](https://github.com/ohsai/API-Gateway/blob/master/apigw-doc.png)  
+![apigw-architecture](https://github.com/ohsai/API-Gateway/blob/master/apigw_doc.png)  
   
 ## Where I've implemented
 - src/proxy : apigw 
@@ -78,7 +78,7 @@ Test commands below should be executed after benchmark proxies and backend serve
 
 #### Server structure used for benchmark  
   
-![benchmarkstructure](https://github.com/ohsai/API-Gateway/blob/master/apigw-doc2.png)  
+![benchmarkstructure](https://github.com/ohsai/API-Gateway/blob/master/apigw_doc2.png)  
   
 #### Example benchmark result
 Benchmark on AWS EC2 c5.2xlarge Ubuntu 16.04 LTS
