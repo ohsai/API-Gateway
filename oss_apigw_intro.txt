@@ -1,0 +1,502 @@
+1	Kong
+1.1	17156
+2	Traefik
+2.1	16630
+3	Zuul 
+3.1	5657
+4	Envoy
+4.1	5925
+5	Linkerd
+5.1	4441
+6	Tyk
+6.1	3610
+7	Apiumbrella
+7.1	1113
+8	Springcloud gateway
+8.1	778
+9	Fusio
+9.1	539
+10	Apiman
+10.1	413
+11	Gravitee
+11.1	245
+12	WSO2/APIM
+12.1	180
+13	HAProxy
+13.1	91
+14	TreeGateway
+14.1	95
+15	Nginx plus 
+15.1	No open source
+
+1	Kong
+1.1	예시1
+1.1.1	https://github.com/Kong/kong , 17156 stars
+1.1.2	Used by Expedia, Eurostar, Harvard Univ, IBM, Intel, OpenDNS, Springer, Sidecar, the Guardian, The new York times, Mashape Marketplace, buzzlogix, Care otter, …
+1.2	정의 
+1.2.1	cloud-native, fast, scalable, and distributed Microservice Abstraction Layer( also known as an API Gateway, API Middleware or in some cases Service Mesh)
+1.3	특징 
+1.3.1	Cloud-Native: Platform agnostic, Kong can run from bare metal to Kubernetes.
+1.3.2	Dynamic Load Balancing: Load balance traffic across multiple upstream services.
+1.3.2.1	타겟 호스트당 그들의 weight에 비례하여 randomly distributed된 여러 개의 slot을 할당받는다. slot개수는 expected maximum targets에 비례한다. Simple Round robin 방식으로 슬롯을 뽑음으로서 target에 대한 weighted round robin과 easy insert/deletion of target들을 구현한다. Target이 ip가 아니라 hostname이면 hostname의 ip 각각씩 쳐서 slot들을 할당한다
+1.3.2.2	Blue-green deployment 간단하고 in progress request drop 없음. Canary release도 weight 조정으로 간단히 이루어짐
+1.3.3	Hash-based Load Balancing: Load balance with consistent hashing/sticky sessions.
+1.3.3.1	Consumer id, remote ip, 특수 헤더 등으로, consistent-hashing 하여 target change로 인한 hashing loss를 줄여서 upstream cache hit 가능성을 높인다. 
+1.3.4	Circuit-Breaker: Intelligent tracking of unhealthy upstream services.
+1.3.5	Health Checks: Active and passive monitoring of your upstream services.
+1.3.5.1	Success counter(에러나면 클리어됨), tcp/http faliures, timeouts counter. 카운터가 역치값을 넘어가면 healthy/unhealthy로 바뀜. Active는 주기적 httpreq, passive는 unresponsive할 때 unhealthy마킹, admin이 수동으로 살림. Active의 probe endpoint를 customize할 수 있음.
+1.3.6	Service Discovery: Resolve SRV records in third-party DNS resolvers like Consul.
+1.3.7	Serverless: Invoke and secure AWS Lambda or OpenWhisk functions directly from Kong.
+1.3.8	WebSockets: Communicate to your upstream services via WebSockets. Ws , wss 
+1.3.9	OAuth2.0: Easily add OAuth2.0 authentication to your APIs.
+1.3.10	Logging: Log requests and responses to your system over HTTP, TCP, UDP, or to disk.
+1.3.11	Security: ACL, Bot detection, whitelist/blacklist IPs, etc...
+1.3.12	Syslog: Logging to System log.
+1.3.12.1	Syslog standard, message component json 형식으로 log됨.
+1.3.13	SSL: Setup a Specific SSL Certificate for an underlying service or API
+1.3.13.1	Configure sni , certificates through admin api
+1.3.14	Monitoring: Live monitoring provides key load and performance server metrics.
+1.3.15	Forward Proxy: Make Kong connect to intermediary transparent HTTP proxies
+1.3.15.1	Public traffic, admin api traffic 받는 부분 다르게 가능. Admin api로 라우팅 경로 manage. Connection, date, X-forwarded 등 http 기본 헤더들 제외하고 안건드는 transparency. Path에 regex를 쓸 수 있음
+1.3.16	Authentications: HMAC, JWT, Basic, and more.
+1.3.17	Rate-limiting: Block and throttle requests based on many variables.
+1.3.18	Transformations: Add, remove, or manipulate HTTP requests and responses.
+1.3.19	Caching: Cache and serve responses at the proxy layer.
+1.3.20	CLI: Control your Kong cluster from the command line.
+1.3.21	REST API: Kong can be operated with its RESTful API for maximum flexibility.
+1.3.22	Geo-Replicated: Configs are always up-to-date across different regions.
+1.3.23	Failure Detection & Recovery: Kong is unaffected if one of your Cassandra nodes goes down.
+1.3.24	Clustering: All Kong nodes auto-join the cluster keeping their config updated across nodes.
+1.3.25	Scalability: Distributed by nature, Kong scales horizontally by simply adding nodes.
+1.3.26	Performance: Kong handles load with ease by scaling and using NGINX at the core.
+1.3.27	Plugins: Extendable architecture for adding functionality to Kong and APIs. 
+1.3.27.1	Globally / service / route 별 적용 가능
+1.3.28	Nginx 기반
+1.4	예시2 (Examples)
+2	Traefik
+2.1	예시
+2.1.1	https://github.com/containous/traefik , 16630 stars
+2.1.2	Used by NewRelic, Mozilla, Rocket.chat, Holidaycheck
+2.2	정의
+2.2.1	Træfik is a modern HTTP reverse proxy and load balancer that makes deploying microservices easy. 
+2.3	특징
+2.3.1	Continuously updates its configuration (No restarts!)
+2.3.2	Supports multiple load balancing algorithms
+2.3.2.1	Weighted round robin, dynamic round robin : weight for high performer
+2.3.2.2	Use cookie for sticky session
+2.3.3	Provides HTTPS to your microservices by leveraging Let's Encrypt (wildcard certificates support) : 무료 인증서
+2.3.4	Circuit breakers, retry 
+2.3.4.1	Retry sending request if network error : def) n.o.servers in backend -1
+2.3.5	High Availability with cluster mode (beta)
+2.3.6	clean web UI
+2.3.7	Websocket, HTTP/2, GRPC ready
+2.3.8	Provides metrics (Rest, Prometheus, Datadog, Statsd, InfluxDB)
+2.3.9	Keeps access logs (JSON, CLF)
+2.3.10	Fast
+2.3.11	Exposes a Rest API
+2.3.12	Packaged as a single binary file (made with go) and available as a tiny official docker image
+2.3.13	Træfik integrates with your existing infrastructure components (Docker, Swarm mode, Kubernetes, Marathon, Consul, Etcd, Rancher, Amazon ECS, ...) and configures itself automatically and dynamically. 
+3	Netflix Zuul 
+3.1	예시
+3.1.1	https://github.com/Netflix/zuul , 5657 stars
+3.1.2	Used by Netflix, Riot games
+3.2	정의
+3.2.1	Zuul is the front door for all requests from devices and web sites to the backend of the Netflix streaming application. As an edge service application, Zuul is built to enable dynamic routing, monitoring, resiliency and security. It also has the ability to route requests to multiple Amazon Auto Scaling Groups as appropriate.
+3.3	특징 ?
+3.3.1	Authentication and Security - identifying authentication requirements for each resource and rejecting requests that do not satisfy them.
+3.3.2	Insights and Monitoring - tracking meaningful data and statistics at the edge in order to give us an accurate view of production.
+3.3.2.1	Hysterix : Latency/Fault Tolerance, Realtime monitoring/react, Concurrency
+3.3.2.2	Ribbon : Load balancing, Multiple protocol support
+3.3.2.3	Turbine : aggregate streams of data for monitoring/reaction
+3.3.2.4	Arcadius : Configuration management library 
+3.3.3	Canary Testing : Canary deployment
+3.3.3.1	Automated Canary analysis : production/baseline/canary cluster : new/old c
+3.3.3.2	Kayenta : metric query/retrieval, Judgement of pass/fail : Data validation, Data cleaning, Metric comparison, final score computation, Reporting
+3.3.4	Security
+3.3.5	Dynamic Routing - dynamically routing requests to different backend clusters as needed.
+3.3.6	Stress Testing - gradually increasing the traffic to a cluster in order to gauge performance.
+3.3.7	Load Shedding - allocating capacity for each type of request and dropping requests that go over the limit.
+3.3.8	Static Response handling - building some responses directly at the edge instead of forwarding them to an internal cluster
+3.3.9	Multiregion Resiliency - routing requests across AWS regions in order to diversify our ELB usage and move our edge closer to our members
+3.3.10	Zuul 1 : Servlet based, Thread based connections, blocking architecture 
+3.3.10.1	Significant connection cost, context switching, memory usage
+3.3.10.2	Easy to debug, stack trace reflects real event error
+3.3.11	Zuul 2 : Netty/RxJava based, Event loop, call back based , asynchronous architecture
+3.3.11.1	Less connection / cpu / memory usage
+3.3.11.2	Hard to debug, stack trace does not reflect event error at all
+3.4	예시 2 
+3.4.1	Microservice : Zuul
+3.4.1.1	Netflix platform : Karyon, Hystrix
+3.4.1.2	Real-time analytics : Mantis
+3.4.1.3	Monitoring : Atlas –spring platform
+3.4.1.4	Dynamic properties : Archais – spring platform
+3.4.1.5	Data pipeline : Kafka, ..
+3.4.1.6	Discovery : Eureka – spring platform
+3.4.1.7	Database : Cassandra
+3.4.1.8	Deployment pipeline : spinnaker
+4	Envoy 
+4.1	예시
+4.1.1	https://github.com/envoyproxy/envoy, 5925 stars
+4.1.2	Used by airbnb, apple, Booking.com, cookpad, DigitalOcean, ebay, f5, Google, IBM, Medium, Microsoft, Netflix istio, Pinterest, salesforce, stripe, square, Tencent, twilio, UBER, Verizon, vmware, Yahoo japan, yelp, ..
+4.1.3	Comparison to other similar systems : https://www.envoyproxy.io/docs/envoy/latest/intro/comparison
+4.2	정의 : APIGW보단 Load balancer에 가까움
+4.2.1	Envoy is a high performance C++ distributed proxy designed for single services and applications, as well as a communication bus and “universal data plane” designed for large microservice “service mesh” architectures. 
+4.3	특징
+4.3.1	OUT OF PROCESS ARCHITECTURE : Envoy is a self contained, high performance server with a small memory footprint. It runs alongside any application language or framework.
+4.3.2	HTTP/2 AND GRPC SUPPORT : Envoy has first class support for HTTP/2 and gRPC for both incoming and outgoing connections. It is a transparent HTTP/1.1 to HTTP/2 proxy.
+4.3.3	ADVANCED LOAD BALANCING : Envoy supports advanced load balancing features including automatic retries, circuit breaking, global rate limiting, request shadowing, zone local load balancing, etc.
+4.3.3.1	Request shadowing : production cluster에 가는 traffic 복사해서 test c에넣음
+4.3.4	APIS FOR CONFIGURATION MANAGEMENT : Envoy provides robust APIs for dynamically managing its configuration.
+4.3.5	Built on the learnings of solutions such as NGINX, HAProxy, hardware load balancers, and cloud load balancers
+5	Linkerd
+5.1	예시
+5.1.1	https://github.com/linkerd/linkerd , 4441 stars
+5.1.2	Used by Monzo, HMH, Salesforce, credit karma, Expedia, NEXTVR, Paypal, Olark
+5.2	정의 : APIGW보단 Load balancer에 가까움
+5.2.1	Linkerd is a transparent service mesh, designed to make modern applications safe and sane by transparently adding service discovery, load balancing, failure handling, instrumentation, and routing to all inter-service communication. 
+5.3	특징
+5.3.1	Load balancing : Linkerd provides multiple load-balancing algorithms that use real-time performance metrics to distribute load and reduce tail latencies across your application.
+5.3.1.1	Pick two on random and compare load, use least loaded (default)
+5.3.1.2	Pick two on random and use Exponentially weighted moving average of latency to compare their latencies, use least latency
+5.3.1.3	각 트래픽마다 전체의 고정된 subset에서만 골라서 least loaded에 보냄, 이러면 higher rate of connection reuse at low traffic volumes
+5.3.1.4	Min heap 으로 load 제일 작은거 골라서 보냄.
+5.3.2	Circuit breaking : Linkerd includes automatic circuit breaking that will stop sending traffic to instances that are deemed to be unhealthy, giving them a chance to recover and avoiding cascading failures.
+5.3.3	Service discovery : Linkerd integrates with various service discovery backends, helping you to reduce the complexity of your code by removing ad-hoc service discovery implementations.
+5.3.4	Dynamic request routing : Linkerd enables dynamic request routing and rerouting, allowing you to set up staging services, canaries, blue-green deploys, cross-DataCenter failover, and dark traffic with a minimal amount of configuration.
+5.3.4.1	Dark traffic : 유입 출처를 알 수 없는 트래픽
+5.3.5	Retries and deadlines : Linkerd can automatically retry requests on certain failures and can timeout requests after a specified period.
+5.3.6	TLS : Linkerd can be configured to send and receive requests with TLS, which you can use to encrypt communication across host boundaries without modification to your existing application code.
+5.3.7	HTTP proxy integration : Linkerd can act as an HTTP proxy, which is widely supported by almost all modern HTTP clients, making it easy to integrate into existing applications.
+5.3.8	Transparent Proxying : Linkerd can be used for transparent proxying by using the linkerd-inject utility to configure your host's iptables rules. Linkerd acts as a transparent HTTP/gRPC/thrift/etc proxy,
+5.3.8.1	Using tproxy in iptables not change ip of packet, making it transparent
+5.3.9	gRPC : Linkerd supports both HTTP/2 and TLS, allowing it to route gRPC requests, enabling advanced RPC mechanisms such as bidirectional streaming, flow control, and structured data payloads.
+5.3.10	Distributed tracing : Linkerd supports both distributed tracing and metrics instrumentation, providing uniform observability across all services.
+5.3.10.1	Distributed tracing provides a holistic view of requests transiting through multiple services, allowing for immediate identification of latency issues.
+5.3.11	Instrumentation : Linkerd supports both distributed tracing and metrics instrumentation, providing uniform observability across all services.
+5.3.12	It works with many common protocols and service discovery backends, including scheduled environments like Mesos and Kubernetes.
+5.3.13	Linkerd is built on top of Netty and Finagle( a production-tested RPC framework used by high-traffic companies like Twitter, Pinterest, Tumblr, PagerDuty, and others).
+5.3.14	can usually be dropped into existing applications with a minimum of configuration, regardless of what language they're written in.
+5.3.15	Linkerd is hosted by the Cloud Native Computing Foundation (CNCF).
+5.3.15.1	CNCF는 이름 그대로 클라우드 기술과 관련된 표준형을 개발하려는 재단입니다
+6	Tyk
+6.1	예시
+6.1.1	https://github.com/TykTechnologies/tyk , 3610 stars
+6.1.2	Used by SK, AXA, USA today, Lotte, Axa, Insight, TripAdvisor, O’Reilly, Cisco, sky sports, Capital One, …
+6.2	정의
+6.2.1	Tyk is a lightweight, open source API Gateway and Management Platform enables you to control who accesses your API, when they access it and how they access it. 
+6.3	특징
+6.3.1	RESTFul API - Full programmatic access to the internals makes it easy to manage your API users, keys and Api Configuration from within your systems
+6.3.2	Multiple access protocols - Out of the box, Tyk supports Token-based, HMAC Signed, Basic Auth and Keyless access methods
+6.3.3	Rate Limiting - Easily rate limit your API users, rate limiting is granular and can be applied on a per-key basis
+6.3.4	Quotas - Enforce usage quotas on users to manage capacity or charge for tiered access
+6.3.5	Granular Access Control - Grant api access on a version by version basis, grant keys access to multiple API's or just a single version
+6.3.6	Key Expiry - Control how long keys are valid for
+6.3.7	API Versioning - API Versions can be easily set and deprecated at a specific time and date
+6.3.8	Blacklist/Whitelist/Ignored endpoint access - Enforce strict security models on a version-by-version basis to your access points
+6.3.9	Analytics logging - Record detailed usage data on who is using your API's (raw data only)
+6.3.10	Webhooks - Trigger webhooks against events such as Quota Violations and Authentication failures
+6.3.11	IP Whitelisting - Block access to non-trusted IP addresses for more secure interactions
+6.3.12	Zero downtime restarts - Tyk configurations can be altered dynamically and the service restarted without affecting any active request
+6.3.13	Tyk is written in Go, which makes it fast and easy to set up. Its only dependencies are a Mongo database (for analytics) and Redis
+7	Apiumbrella
+7.1	예시
+7.1.1	https://github.com/NREL/api-umbrella , 1113 stars
+7.1.2	Used by api.data.gov (a free API management service for federal agencies), NREL developer network (National Renewable Energy Laboratory)
+7.2	정의
+7.2.1	API Umbrella is an open source API management platform for exposing web service APIs. Our aim is to make it easier for you to release and manage your APIs.
+7.3	특징
+7.3.1	API Keys  We'll handle API keys for you:
+7.3.1.1	API key signup: It's quick and easy for users to signup for an API key and start using it immediately.
+7.3.1.2	Shared across services: Users can reuse their API key across all participating api.data.gov APIs.
+7.3.1.3	No coding required: No code changes are required to your API. If your API is being hit through api.data.gov, you can simply assume it's from a valid user.
+7.3.2	Analytics  We'll track all the traffic to your API and give you tools to easily analyze it:
+7.3.2.1	Demonstrate value: Understand how your API is being used so you can gauge the value and success of your APIs.
+7.3.2.2	Visualize usage and trends: View graphs of the overall usage trends for your APIs.
+7.3.2.3	Flexible querying: Drill down into the stats based on any criteria. Find out how much traffic individual users are generating, or answer more complex questions about aggregate usage.
+7.3.2.4	Monitor API performance: We gather metrics on the speed of your API, so you can keep an eye on how your API is performing.
+7.3.2.5	No coding required: No code changes are required to your API. If your API is being hit through api.data.gov, we can take care of logging the necessary details.
+7.3.3	Documentation  We can help with publishing documentation for your API:
+7.3.3.1	Hosted or linked: We can host the documentation of your API, or, if you already have your own developer portal, we can simply link to it.
+7.3.3.2	One stop shop: As more agencies add APIs to api.data.gov, users will be able to discover and explore more government APIs all at one destination.
+7.3.4	Rate Limiting  You might not want to allow all users to have uncontrolled access to your APIs:
+7.3.4.1	Prevent abuse: Your API servers won't see traffic from users exceeding their limits, preventing additional load on your servers.
+7.3.4.2	Per user limits: Individual users can be given higher or lower rate limits.
+7.3.4.3	No coding required: No code changes are required to your API. If your API is being hit, you can simply assume it's from a user that hasn't exceeded their rate limits.
+8	Spring cloud gateway
+8.1	예시
+8.1.1	https://github.com/spring-cloud/spring-cloud-gateway, 778 stars
+8.2	정의
+8.2.1	This project provides an API Gateway built on top of the Spring Ecosystem, including: Spring 5, Spring Boot 2 and Project Reactor. Spring Cloud Gateway aims to provide a simple, yet effective way to route to APIs and provide cross cutting concerns to them such as: security, monitoring/metrics, and resiliency.
+8.3	특징
+8.3.1	Java 8 , Spring Framework 5 , Spring Boot 2
+8.3.2	Dynamic routing
+8.3.3	Route matching built into Spring Handler Mapping
+8.3.4	Route matching on HTTP Request (Path, Method, Header, Host, etc…)
+8.3.5	Filters scoped to Matching Route
+8.3.6	Filters can modify downstream HTTP Request and HTTP Response (Add/Remove Headers, Add/Remove Parameters, Rewrite Path, Set Path, Hystrix, etc…)
+8.3.7	API or configuration driven
+8.3.8	Supports Spring Cloud ’DiscoveryClient‘ for configuring Routes
+8.3.8.1	Get services, corresponding instances registered in Eureka, or so forth.
+9	Fusio
+9.1	예시
+9.1.1	https://github.com/apioo/fusio, 539 stars
+9.2	정의
+9.2.1	open source API management platform which helps to build and manage RESTful APIs. 
+9.3	특징
+9.3.1	Versioning : It is possible to define different versions of your endpoint. A concrete version can be requested through the Accept header i.e. application/vnd.acme.v1+json
+9.3.2	Documentation : Fusio generates automatically a documentation of the API endpoints based on the provided schema definitions.
+9.3.3	Validation : Fusio uses the standard JSONSchema to validate incoming request data
+9.3.4	Authorization : Fusio uses OAuth2 for API authorization. Each app can be limited to scopes to request only specific endpoints of the API.
+9.3.5	Analytics : Fusio monitors all API activities and shows them on a dashboard so you always know what is happening with your API.
+9.3.6	Rate limiting : It is possible to limit the requests to a specific threshold.
+9.3.7	Specification : Fusio generates different specification formats for the defined API endpoints i.e. OpenAPI, Swagger, RAML.
+9.3.8	Subscription : Fusio contains a subscription layer which helps to build pub/sub for your API.
+9.3.9	User management : Fusio provides an API where new users can login or register a new account through GitHub, Google, Facebook or through normal email registration.
+9.3.10	Logging : All errors which occur in your endpoint are logged and are visible at the backend including all information from the request.
+9.3.11	Connection : Fusio provides an adapter system to connect to external services. By default we provide the HTTP and SQL connection type but there are many other types available i.e. MongoDB, Amqp, Cassandra.
+9.3.12	Migration : Fusio has a migration system which allows you to change the database schema on deployment.
+9.3.13	Testing : Fusio provides an api test case wherewith you can test every endpoint response without setting up a local web server.
+9.3.14	PHP
+9.4	예시2
+9.4.1	Use cases
+9.4.1.1	Business functionality : Exposing an API of your business functionality is a great way to extend your product. You enable customers to integrate it into other applications which gives the possibility to open up for new markets. With Fusio you can build such APIs and integrate them seamlessly into your product. We also see many companies which use the API itself as the core product.
+9.4.1.2	Micro services : With Fusio you can simply build small micro services which solve a specific task in a complex system.
+9.4.1.3	Javascript applications : Javascript frameworks like i.e. AngularJS or EmberJS becoming the standard. With Fusio you can easily build a backend for such applications. So you dont have to build the backend part by yourself.
+9.4.1.4	Mobile apps : Almost all mobile apps need some form to interact with a remote service. This is mostly done through REST APIs. With Fusio you can easily build such APIs which then can also be used by other applications.
+10	Apiman
+10.1	예시
+10.1.1	https://github.com/apiman/apiman, 413 stars
+10.2	정의
+10.2.1	standalone API Management system that can be either run as a separate system or embedded within existing frameworks and platforms. 
+10.3	특징
+10.3.1	Govern Your APIs : Flexible, policy-based runtime governance for your APIs. Offer the same API through multiple plans, allowing different levels of service to different API consumers.
+10.3.2	Rich Management Layer : Use the rich management layer (REST API and separate UI) to manage/configure not only APIs but also the client applications that consume them.
+10.3.3	Easily Embeddable : Embed the API Management Policy Engine in any application - it has a small footprint and can be completely independent from the management layer.
+10.3.4	Fully Asynchronous : The runtime engine's API is fully asynchronous and is designed to run equally well in both a standard Java EE environment and newer async runtimes like Vert.x.
+10.3.4.1	Vert.x ~ Netty
+10.3.5	JAVA
+11	Gravitee
+11.1	예시
+11.1.1	https://github.com/gravitee-io/gravitee-gateway, 245 stars
+11.1.2	Used by Auchan Retail
+11.2	정의
+11.2.1	Gravitee.io is a flexible, lightweight and blazing-fast open source API Management solution that helps your organization control finely who, when and how users access your APIs.
+11.3	특징
+11.3.1	REST API  Every action performed via the web UI is using our internal Rest API.
+11.3.2	ONE CLICK DEPLOYMENT  With a single click, your API is deployed to every Gravitee.io gateway and is ready to be consumed.
+11.3.3	HIGHLY SCALABLE  You can easily add a new Gravitee.io gateway into your cluster. Data is synchronized and you don't have to waste time into configuration.
+11.3.4	CUSTOM POLICIES Gravitee.io provides a lot of policies out of the box (rate limiting, CORS, IP filtering). If it's not enough, you can develop your own.
+11.3.5	LOAD BALANCING  Round robin, random, sticky mode, Gravitee.io provides a set of load-balancing algorithms that fit your needs.
+11.3.6	ROLLBACK CONFIGURATION  Every change in the configuration of your API is versioned. You can roll back to an old configuration or compare them.
+11.3.7	CUSTOM REPORTERS  You want to report data into a specific storage or by calling a dedicated API ? No problem, just implement the reporting API and do whatever you want!
+11.3.8	ANALYTICS  Response time, response status, payload size, our analytics dashboard provides useful metrics to analyze the behavior of your API and how it is consumed.
+11.3.9	API PORTAL  Because without a consumer, your API is nothing, Gravitee.io highlights your APIs on its portal and provides documentation and access control for applications which want to make use of your work.
+11.3.10	SHARDING  By using tags, you can dispatch your APIs into multiple gateway instances (public / private environment, ...)
+11.3.10.1	게이트웨이 instance마다 태그를 붙여 해당 태그를 가지고 있는 api만을 deploy하거나 혹은 배제할 수 있음.
+11.3.11	HEALTH CHECK  As an API provider, add health check to your services and provide feedback to your users about the availability of your API.
+11.3.12	FAIL-OVER  One of your API services is not available ? No problem, the gateway will take care of this and will direct the call to an other instance of your service in a transparent way for consumers.
+11.3.13	SECURITY  Protect your API by providing an API key to consumers, adding OAuth2 or JWT policy, Basic authentication, ...
+12	WSO2/APIM
+12.1	예시
+12.1.1	https://github.com/wso2/product-apim , 180 stars 
+12.1.2	Used by Realdolmen, West ,BDigital, Zeomega, IJet, BNY Mellon, Spida solutions, Quby
+12.2	정의
+12.2.1	WSO2 API Management is an Open Source API Management tool that allows APIs/Services to be Secured, Monitored and Rate Controlled. The lightweight API Gateway intercepts all API requests applying Security, Rate Limiting and Monitoring aspects on your APIs.
+12.3	특징
+12.3.1	API Gateway and Microgateway : Secure, low-latency access to microservices via WSO2 API Microgateway eliminates the need for a central gateway by enabling enterprises to apply API management policies in a decentralized fashion.
+12.3.2	Hybrid API Management : Hybrid SaaS API management solutions enable you to get the best of both worlds, by delivering the benefits of on-premises, with minimal infrastructure overhead of cloud.
+12.3.3	API Security : Authenticate and authorize API requests from any client or device type making requests to resource servers operating on traditional and microservice architectures.
+12.3.4	API Store (Developer Portal) : It allows application developers to discover and start consuming APIs. An API marketplace incorporates business and human aspects that encourage API developers by providing tools, documentation, incentives such as monetization and supporting activities like evangelism, workshops, and hackathons.
+12.3.4.1	deprecated
+12.3.5	Collaborative API and Application Lifecycle Management : This tool allows API Developers to design, publish, version and manage API lifecycles. Enables the design, implementation and documentation of APIs with business planning. Facilitates the management of the API Lifecycle across environments, data centers, and regions.
+12.3.6	Business Insights and Anomaly Detection : Monitors system behavior, as well as API and application usage at operations and business levels.
+12.3.7	Components
+12.3.7.1	API Gateway/Microgateway: Microgateway  Supports both forms of centralized and decentralized Gateway capabilities with high scalability characteristics to cater traditional and modern enterprise architectures.
+12.3.7.2	Key Manager : The Key Manager is the STS (Security Token Service) that issues tokens that can be used by Resource servers for authentication and authorization of requests. It supports a wide range of OAuth grant types and is capable of issuing both opaque and signed self contained tokens.
+12.3.7.3	Traffic Manager : Helps users to regulate API traffic, make APIs and applications available to consumers at different service levels, and secure APIs against security attacks. The Traffic Manager features a dynamic throttling engine to process throttling policies in real-time, including rate limiting of API requests.
+12.3.7.4	Analytics : API Manager integrates with the WSO2 Analytics platform to provide reports, statistics and graphs on the APIs deployed in WSO2 API Manager. Enable Alerts to monitor APIs and react on anomalies. Gain insights by geography, user categories and more.
+12.3.7.5	Configure : alerts to monitor these APIs and detect unusual activity, manage locations via geo location statistics and carry out detailed analysis of the logs.
+12.3.7.6	Storefront/marketplace : Enables developers to discover APIs, test them before consumption, calculate monetization, get feedback and make feature requests.
+12.3.7.7	Publisher : A structured GUI designed for API creators to develop, document, scale and version APIs, while also facilitating more API management-related tasks such as publishing APIs, monetization and analyzing statistics.
+12.3.7.8	Designer/Studio : An Eclipse-based SOA development environment. Developer Studio allows developers to define a project representing a complete Composite Application (C-App) spanning multiple products and features.
+13	HAproxy
+13.1	예시
+13.1.1	https://github.com/haproxy/haproxy, 91 stars
+13.1.2	Used by GoDaddy, GitHub, Bitbucket, Stack Overflow, Reddit, Speedtest.net, Tumblr, Twitter, Tuenti
+13.2	정의
+13.2.1	HAProxy is a free, very fast and reliable solution offering high availability, load balancing, and proxying for TCP and HTTP-based applications. It is particularly suited for very high traffic web sites and powers quite a number of the world's most visited ones. Over the years it has become the de-facto standard opensource load balancer, is now shipped with most mainstream Linux distributions, and is often deployed by default in cloud platforms.
+13.3	특징
+13.3.1	Proxying
+13.3.2	SSL
+13.3.3	Monitoring
+13.3.4	High availability
+13.3.5	Load balancing
+13.3.6	Stickiness : HAProxy provides a fairly comprehensive set of possibilities to maintain a visitor on the same server even across various events such as server addition/removal, down/upcycles, and some methods are designed to be resistant to the distance between multiple load balancing nodes in that they don't require any replication 
+13.3.7	Sampling and converting information
+13.3.8	Maps
+13.3.9	ACLs and conditions
+13.3.10	Content switching
+13.3.11	Stick-tables
+13.3.12	Formatted strings
+13.3.13	HTTP rewriting and redirection
+13.3.14	Server protection
+13.3.15	Logging
+13.3.16	Statistics
+13.3.17	Management
+13.3.18	System-specific capabilities
+13.3.19	Scripting
+13.3.20	최적화 :
+13.3.21	a single-process, event-driven model 
+13.3.21.1	considerably reduces the cost of context switch and the memory usage. Processing several hundreds of tasks in a millisecond is possible, and the memory usage is in the order of a few kilobytes per session 
+13.3.21.2	while memory consumed in preforked or threaded servers is more in the order of megabytes per process.
+13.3.22	O(1) event checker on systems that allow it (Linux and FreeBSD)
+13.3.22.1	 allowing instantaneous detection of any event on any connection among tens of thousands.
+13.3.23	Delayed updates to the event checker using a lazy event cache 
+13.3.23.1	ensures that we never update an event unless absolutely required. This saves a lot of system calls.
+13.3.24	Single-buffering without any data copy between reads and writes whenever possible. 
+13.3.24.1	This saves a lot of CPU cycles and useful memory bandwidth. Often, the bottleneck will be the I/O busses between the CPU and the network interfaces. At 10-100 Gbps, the memory bandwidth can become a bottleneck too.
+13.3.25	Zero-copy forwarding is possible using the splice() system call under Linux, 
+13.3.25.1	and results in real zero-copy starting with Linux 3.5. This allows a small sub-3 Watt device such as a Seagate Dockstar to forward HTTP traffic at one gigabit/s.
+13.3.26	MRU memory allocator using fixed size memory pools for immediate memory allocation favoring hot cache regions over cold cache ones. 
+13.3.26.1	This dramatically reduces the time needed to create a new session.
+13.3.27	Work factoring, such as multiple accept() at once, and the ability to limit the number of accept() per iteration when running in multi-process mode,
+13.3.27.1	 so that the load is evenly distributed among processes.
+13.3.28	CPU-affinity is supported when running in multi-process mode, or simply to adapt to the hardware and be the closest possible to the CPU core managing the NICs(Network Interface controller) while not conflicting with it.
+13.3.29	Tree-based storage, making heavy use of the Elastic Binary tree I have been developping for several years.
+13.3.29.1	 This is used to keep timers ordered, to keep the runqueue ordered, to manage round-robin and least-conn queues, to look up ACLs or keys in tables, with only an O(log(N)) cost.
+13.3.30	Optimized timer queue : 
+13.3.30.1	timers are not moved in the tree if they are postponed, because the likeliness that they are met is close to zero since they're mostly used for timeout handling. This further optimizes the ebtree usage.
+13.3.31	optimized HTTP header analysis : headers are parsed an interpreted on the fly, and the parsing is optimized to avoid an re-reading of any previously read memory area. 
+13.3.31.1	Checkpointing is used when an end of buffer is reached with an incomplete header, so that the parsing does not start again from the beginning when more data is read. Parsing an average HTTP request typically takes half a microsecond on a fast Xeon E5.
+13.3.32	careful reduction of the number of expensive system calls. 
+13.3.32.1	Most of the work is done in user-space by default, such as time reading, buffer aggregation, file-descriptor enabling/disabling.
+13.3.33	Content analysis is optimized to carry only pointers to original data and never copy unless the data needs to be transformed. 
+13.3.33.1	This ensures that very small structures are carried over and that contents are never replicated when not absolutely necessary.
+13.3.34	All these micro-optimizations result in very low CPU usage even on moderate loads. And even at very high loads, when the CPU is saturated, it is quite common to note figures like 5% user and 95% system, which means that the HAProxy process consumes about 20 times less than its system counterpart. 
+13.3.34.1	This explains why the tuning of the Operating System is very important. This is the reason why we ended up building our own appliances, in order to save that complex and critical task from the end-user.
+13.3.35	In production, HAProxy has been installed several times as an emergency solution when very expensive, high-end hardware load balancers suddenly failed on Layer 7 processing. 
+13.3.35.1	Some hardware load balancers still do not use proxies and process requests at the packet level and have a great difficulty at supporting requests across multiple packets and high response times because they do no buffering at all. On the other side, 
+13.3.35.2	software load balancers use TCP buffering and are insensible to long requests and high response times. A nice side effect of HTTP buffering is that it increases the server's connection acceptance by reducing the session duration, which leaves room for new requests.
+13.3.36	퍼포먼스 메트릭 :
+13.3.36.1	The session rate
+13.3.36.2	This factor is very important, because it directly determines when the load balancer will not be able to distribute all the requests it receives. It is mostly dependant on the CPU. 
+13.3.36.2.1	Sometimes, you will hear about requests/s or hits/s, and they are the same as sessions/s in HTTP/1.0 or HTTP/1.1 with keep-alive disabled. Requests/s with keep-alive enabled is generally much higher (since it significantly reduces system-side work) but is often meaningless for internet-facing deployments since clients often open a large amount of connections and do not send many requests per connection on average. 
+13.3.36.2.2	This factor is measured with varying object sizes, the fastest results generally coming from empty objects (eg: HTTP 302, 304 or 404 response codes). Session rates around 100,000 sessions/s can be achieved on Xeon E5 systems in 2014.
+13.3.36.3	The session concurrency
+13.3.36.4	Generally, the session rate will drop when the number of concurrent sessions increases (except with the epoll or kqueue polling mechanisms). The slower the servers, the higher the number of concurrent sessions for a same session rate. If a load balancer receives 10000 sessions per second and the servers respond in 100 ms, then the load balancer will have 1000 concurrent sessions. 
+13.3.36.4.1	This number is limited by the amount of memory and the amount of file-descriptors the system can handle. 
+13.3.36.4.2	With 16 kB buffers, HAProxy will need about 34 kB per session, which results in around 30000 sessions per GB of RAM. In practise, socket buffers in the system also need some memory and 20000 sessions per GB of RAM is more reasonable. Layer 4 load balancers generally announce millions of simultaneous sessions because they need to deal with the TIME_WAIT sockets that the system handles for free in a proxy. Also they don't process any data so they don't need any buffer. Moreover, they are sometimes designed to be used in Direct Server Return mode, in which the load balancer only sees forward traffic, and which forces it to keep the sessions for a long time after their end to avoid cutting sessions before they are closed.
+13.3.36.5	The data forwarding rate
+13.3.36.6	Highest data rates are achieved with large objects to minimise the overhead caused by session setup and teardown. Large objects generally increase session concurrency, and high session concurrency with high data rate requires large amounts of memory to support large windows. 
+13.3.36.7	High data rates burn a lot of CPU and bus cycles on software load balancers because the data has to be copied from the input interface to memory and then back to the output device. Hardware load balancers tend to directly switch packets from input port to output port for higher data rate, but cannot process them and sometimes fail to touch a header or a cookie. 
+13.3.36.8	Haproxy on a typical Xeon E5 of 2014 can forward data up to about 40 Gbps. A fanless 1.6 GHz Atom CPU is slightly above 1 Gbps.
+13.3.37	There has not been any such bug found in stable versions for the last 13 years, though it happened a few times with development code running in production.
+13.3.38	자랑
+13.3.39	HAProxy has been installed on Linux 2.4 systems serving millions of pages every day, and which have only known one reboot in 3 years for a complete OS upgrade. 
+13.3.40	Right now, it's being used in many Fortune 500 companies around the world to reliably serve billions of pages per day or relay huge amounts of money. Some people even trust it so much that they use it as the default solution to solve simple problems (and I often tell them that they do it the dirty way). Such people sometimes still use versions 1.1 or 1.2 which sees very limited evolutions and which targets mission-critical usages. HAProxy is really suited for such environments because the indicators it returns provide a lot of valuable information about the application's health, behaviour and defects, which are used to make it even more reliable. Version 1.3 has now received far more testing than 1.1 and 1.2 combined, so users are strongly encouraged to migrate to a stable 1.3 or 1.4 for mission-critical usages.
+13.3.41	핵심아닌기능
+13.3.42	Security is an important concern when deploying a software load balancer. I have been very careful about programming style. Vulnerabilities are very rarely encountered on haproxy, and its architecture significantly limits their impact and often allows easy workarounds. Its remotely unpredictable even processing makes it very hard to reliably exploit any bug, and if the process ever crashes, the bug is discovered. All of them were discovered by reverse-analysis of an accidental crash BTW.
+13.3.43	HAProxy also provides regex-based header control. 
+13.3.43.1	Parts of the request, as well as request and response headers can be denied, allowed, removed, rewritten, or added. This is commonly used to block dangerous requests or encodings (eg: the Apache Chunk exploit), and to prevent accidental information leak from the server to the client. 
+13.3.44	Cache-control checking ensure that no sensible information gets accidentely cached by an upstream proxy consecutively to a bug in the application server for example.
+13.3.45	Its mode of operation makes its integration into existing architectures very easy and riskless
+13.3.46	It is written in C
+14	TreeGateway
+14.1	예시
+14.1.1	https://github.com/Leanty/tree-gateway, 95 stars
+14.2	정의
+14.2.1	TREEGATEWAY PROVIDES A SINGLE AND UNIFIED ENTRY POINT ACROSS ONE OR MORE INTERNAL MICRO SERVICES APIS
+14.3	특징
+14.3.1	Authentication: More than 480 strategies available through an easy passportjs integration, including support to JWT tokens, Oauth, Basic and many others.
+14.3.2	A flexible and robust Routing system that allows any kind of customized request pipeline.
+14.3.3	Rate limits - To control quotas for your customers and to define actions to be taken when any quota is exceeded.
+14.3.4	Caching system - Allow you to easily inject and control caching behavior for your APIs. Tree Gateway provides two kinds of cache:
+14.3.5	At browser level - Intercepting the responses and controling how the HTTP cache headers are used.
+14.3.6	At a server level - Caching responses for your APIs in memory (using the redis database).
+14.3.7	Easy Service Discovery, using your preffered registry.
+14.3.8	Integrated CircuitBreaker - A fast circuitbreaker to fast fail your responses when your API is having problems to work. It support custom handlers for events like "open" or "close" circuit.
+14.3.9	Real Time Monitoring and Analytics -
+14.3.10	Collect statistics about any access to your APIs. Capture any event, like a cache hit on a cache entrance, a circuitbreaker open circuit or an authentication attempt.
+14.3.11	A very flexible and powerfull log system, that can be integrated with any service like logstash, timescale, loggly or new relic.
+14.3.12	Easy Administration - The gateway can be configured remotelly. And no restart is needed. Any API configuration can be "hot" changed and all configurations are propagated to other tree-gateway cluster nodes with no pain. The gateway can be configured through:
+14.3.13	Admin API - A REST API that can be invoked through HTTP;
+14.3.14	SDK - A Node JS SDK that can be used to configure the Gateway (or a cluster of gateways) programmatically;
+14.3.15	CLI - A command line tool can be used to configure using shell commands or scripts.
+14.3.16	Focused on Performance and High Availability - Turn easy the creation of big clusters.
+14.3.17	Support clusters of redis to share configurations, circuitbreaker states, cached content and so on.
+14.3.18	Automatically propagate events to all cluster nodes.
+14.3.19	Auto discovery for cluster nodes.
+14.3.20	Very low resources footprint.
+14.3.21	Everything can be extended or customized using only Javascript. All plugins can be written in pure Javascript.
+14.3.22	writen in Node JS
+15	Nginx plus
+15.1	예시
+15.2	정의
+15.2.1	DELIVER RELIABLE AND HIGH-PERFORMING APIS Great applications are backed by strong APIs. Trust NGINX Plus to manage and secure your business-critical APIs.
+15.3	특징
+15.3.1	Load balancer  Extend traditional load balancing with software:
+15.3.1.1	HTTP, TCP, and UDP load balancing
+15.3.1.2	Layer 7 request routing using URI, cookie, args, and more
+15.3.1.3	Session persistence based on cookies * - stickiness?
+15.3.1.4	Active health checks on status code and response body *
+15.3.1.5	Service discovery using DNS *
+15.3.2	Content cache  Use the same cache that powers the world's largest CDNs:
+15.3.2.1	Cache static and dynamic content
+15.3.2.2	Improve dynamic content performance with microcaching
+15.3.2.2.1	Microcaching is a caching technique whereby content is cached for a very short period of time, perhaps as little as 1 second. This effectively means that updates to the site are delayed by no more than a second, which in many cases is perfectly acceptable.
+15.3.2.3	Serve "stale" content while revalidating in the background to improve performance
+15.3.2.4	Override or set Cache‑Control headers
+15.3.2.5	Manage the cache easily with the cache‑purging API *
+15.3.3	Web server  Deliver static assets with unparallelled speed and efficiency:
+15.3.3.1	Handle hundreds of thousands of clients simultaneously
+15.3.3.2	Use up to 90% less memory than other web servers
+15.3.3.3	Reverse proxy multiple protocols: HTTP, gRPC, Memcached, PHP‑FPM, SCGI, uwsgi
+15.3.3.4	Stream HTTP video: FLV, HDS, HLS, MP4
+15.3.3.5	HTTP/2 gateway with HTTP/2 Server Push support
+15.3.4	Security controls  Protect your applications:
+15.3.4.1	Request/connection limiting – rate limiting
+15.3.4.2	Dual stack RSA/ECC SSL offloading
+15.3.4.3	IP access control list (ACL)
+15.3.4.4	JWT authentication for APIs and OpenID Connect single sign‑on (SSO) *
+15.3.4.5	NGINX WAF dynamic module *
+15.3.5	Dynamic modules  Dynamically plug in additional features:
+15.3.5.1	nginScript module for JavaScript configuration
+15.3.5.2	GeoIP modules to locate users by IP address (requires MaxMind GeoIP database)
+15.3.5.3	Build tool for compiling your own custom modules
+15.3.5.4	Single sign‑on modules: ForgeRock, IDF Connect, and Ping Identity *
+15.3.5.5	Dynamic modules repository *
+15.3.6	Monitoring  Diagnose and debug complex application architectures:
+15.3.6.1	Monitor NGINX metrics and validate configuration with NGINX Amplify
+15.3.6.2	Plug-ins for AppDynamics, Datadog, Dynatrace, and New Relic
+15.3.6.3	Extended status with more than 90 unique metrics *
+15.3.6.4	Built‑in, real‑time graphical dashboard *
+15.3.6.5	JSON and HTML output for integration with custom monitoring tools *
+15.3.7	High availability (HA) *  Scalable and reliable HA deployments:
+15.3.7.1	Active-active and active-passive HA modes
+15.3.7.2	Configuration synchronization between servers in a cluster
+15.3.7.3	Easy installation with built‑in script
+15.3.7.4	State sharing for Sticky Learn session persistence
+15.3.8	Kubernetes Ingress controller  Create Kubernetes applications with NGINX Plus in front:
+15.3.8.1	Load balancing w/ SSL/TLS termination
+15.3.8.2	WebSocket and HTTP/2 support
+15.3.8.3	URI rewriting before request is forwarded to application
+15.3.8.4	Session persistence *
+15.3.8.5	JWT authentication *
+15.3.9	Programmability  Dynamically deploy custom architectures:
+15.3.9.1	NGINX JavaScript module for scripting and advanced configurations
+15.3.9.2	Lua scripting language
+15.3.9.3	Ansible, Chef, and Puppet integration
+15.3.9.4	API for managing upstream servers, key‑value stores, and real‑time metrics *
+15.3.9.5	Dynamic reconfiguration without process reloads *
+15.3.10	Streaming media  Scalably deliver streaming media:
+15.3.10.1	Live streaming: RTMP, Apple HTTP Live Streaming (HLS), Dynamic Adaptive Streaming over HTTP (DASH)
+15.3.10.2	VOD: Flash (flv), MP4
+15.3.10.3	Adaptive bit-rate VOD: HLS, Adobe HTTP Dynamic Streaming (HDS) *
+15.3.10.4	Bandwidth controls for MP4 streaming *
+15.3.11	Cons
+15.3.12	Performance acceleration  Cache common API responses to improve performance and reduce load on API endpoints
+15.3.13	API authentication  Restrict and authenticate API accesses using JWT token validation
+15.3.14	Rate limiting  Protect APIs from being overwhelmed with request and bandwidth limits
+15.3.15	Cost-effective  Manage and secure your APIs without the high deployment and operational costs of a full API management platform.
+15.3.16	Request routing  Route clients to the correct API endpoint based on URI
+15.3.17	Customizable  Use nginScript or Lua to customize NGINX Plus to your unique API needs
